@@ -1,0 +1,31 @@
+[
+  {
+    "customer_id": 1,
+    "bill_no": "01",
+    "name": "amisha",
+    "invoice_date": "31-1-2023",
+    "mobile_no": 6398523698,
+    "address": "a/40 , harijipark , soc , ahemdabad",
+    "item desciption": [
+      {
+        "product_id": 1,
+        "product_name": "silver payal",
+        "hsn": 7113,
+        "weight": 256.23,
+        "price": 300
+      },
+      {
+        "product_id": 2,
+        "product_name": "silver bracelate",
+        "hsn": 7113,
+        "weight": 200.23,
+        "price": 300
+      }
+    ],
+    "taxable_amount": 1830,
+    "SGST": 27.45,
+    "CGST": 27.45,
+    "discount": 4.9,
+    "total_amount": 1880
+  }
+]

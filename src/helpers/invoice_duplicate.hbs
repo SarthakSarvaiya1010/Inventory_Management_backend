@@ -1,0 +1,327 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Invoice Example</title>
+    <link rel="stylesheet" href="../../Public/stylesheets/style.css" />
+
+</head>
+<style>
+    tr {
+        text-align: left;
+    }
+
+    .divName {
+        width:
+            120px;
+        text-align: left;
+        margin: 0;
+        padding: 0;
+    }
+
+    .billno {
+        /* border: 2px
+    solid black; */
+        width: 100px;
+        text-align: left;
+        margin: 0;
+        padding: 0;
+    }
+
+    .billdata {
+        /* border: 2px solid black; */
+        width: 170px;
+        text-align: left;
+        margin: 0;
+        padding: 0;
+    }
+
+    h3 {
+        padding: 0;
+        font-size: 17px;
+        text-align: left;
+    }
+
+    h4 {
+        padding:
+            0;
+        font-size: 15px;
+        text-align: left;
+    }
+
+    .no {
+        width: 70px;
+    }
+
+    .description {
+        width: 205px;
+    }
+
+    .hsn {
+        width: 90px;
+    }
+
+    .weight {
+        width: 90px;
+    }
+
+    .rate {
+        width: 90px;
+    }
+
+    .amount {
+        width: 90px;
+    }
+
+    .item {
+        height: 40px;
+    }
+
+    .taxableamount {
+        width:
+            93px;
+    }
+
+    .taxableamountdata {
+        width: 90px;
+    }
+
+    .companyName {
+
+        font-size: 17px;
+        text-align: end;
+        font-weight: bold;
+        height: 40px;
+    }
+
+    .customer_signature {
+        padding: 0;
+        font-size: 17px;
+        text-align: right;
+        padding-top: 20px;
+
+    }
+
+    p b {
+        text-align: left;
+
+    }
+
+    .authorized_signature {
+        padding: 0;
+        font-size: 17px;
+        text-align: end;
+    }
+</style>
+
+<body>
+    <div class="invoice-box">
+        <div style="text-align: right;">
+            <b>Duplicate</b>
+        </div>
+        <table cellpadding="0" border="1px solid #000" cellspacing="0">
+            {{#each invoiceDataDummy}}
+            <tr>
+                <td class="divName">
+                    <b>Name</b>
+                </td>
+                <td>
+                    <p>{{this.customer_name}}</p>
+                </td>
+                <td class="billno">
+                    <b>Bill No</b>
+                </td>
+                <td class="billdata">
+                    <p>{{this.bill_no}}</p>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <b>Address</b>
+                </td>
+                <td>
+                    <p>{{this.customer_address}}</p>
+                </td>
+
+                <td>
+                    <b>Date</b>
+                </td>
+                {{/each}}
+                {{#each date}}
+                <td>
+                    <p>{{this.date}}</p>
+                </td>
+                {{/each}}
+                {{#each invoiceDataDummy}}
+            </tr>
+            <tr>
+                <td>
+                    <b>Mobile No.</b>
+                </td>
+                <td>
+                    <p>{{this.customer_mobile_no}}</p>
+                </td>
+                <td>
+                    <b>G. S. T. No</b>
+                </td>
+                <td>
+                    <p>{{this.gst}}</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>Customer GST No.</b>
+                </td>
+                <td colspan="3">
+                    <p>{{this.customer_gst_no}}</p>
+                </td>
+            </tr>
+            {{/each}}
+        </table>
+        <table cellpadding="0" border="1px solid #000" cellspacing="0" class="invoice">
+            <tr>
+                <td class="no">
+                    <b>NO</b>
+                </td>
+                <td class="description">
+                    <b>ITEM DESCRIPTION</b>
+                </td>
+                <td class="hsn">
+                    <b>HSN</b>
+                </td>
+                <td class="weight">
+                    <b>NET WEIGHT [In Grams]</b>
+                </td>
+                <td class="rate">
+                    <b>RATE</b>
+                </td>
+                <td class="amount">
+                    <b>AMOUNT</b>
+                </td>
+            </tr>
+            {{#each test}}
+            <tr class="item">
+                <td>
+                    <p> {{this.bill_no}}</p>
+                </td>
+                <td>
+                    <p>{{this.product_name}}</p>
+                </td>
+
+                <td>
+                    <p>{{this.hsn}}</p>
+                </td>
+                <td>
+                    <p>{{this.weight}}</p>
+                </td>
+                <td>
+                    <p>{{this.rate}}</p>
+                </td>
+                <td>
+                    <p>{{this.amount}}</p>
+                </td>
+            </tr>
+            {{/each}}
+            <tr class="item">
+                <td></td>
+                <td>
+                    <b>Total</b>
+                </td>
+                <td></td>
+                <td>
+                    <p>14.7</p>
+                </td>
+                <td>
+                    <p>92</p>
+                </td>
+                <td>
+                    <p>1352.40</p>
+                </td>
+            </tr>
+            <tr class="item">
+                {{#each toWords}}
+                <td colspan="4" rowspan="5">
+                    <p> <b> Rs in words:</b> {{this.toWords}} Only
+                    </p>
+                    <hr />
+                    <p>
+                        Terms & Conditions:
+                        <li>
+                            Payment will not be refunded once the bill is generated
+                        </li>
+                        <li>
+                            No gurantee will be given any 92.5 jewellery
+                        </li>
+                        <li>
+                            Ahmedabad will be jurisdiction for any process
+                        </li>
+                        <li>
+                            Apologies for mistakes
+                        </li>
+                    </p>
+                </td>
+                {{/each}}
+                {{#each invoiceDataDummy}}
+
+                <td class="taxableamount">
+                    <p>Taxable Amount</p>
+                </td>
+                <td class="taxableamountdata">
+                    <b>{{this.taxable_amount}}</b>
+                </td>
+            </tr>
+            <tr>
+
+                <td class="taxableamount">
+                    <p>SGST 1.50%</p>
+                </td>
+                <td class="taxableamountdata">
+                    <b>{{this.sgst}}</b>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="taxableamount">
+                    <p>CGST 1.50%</p>
+                </td>
+                <td class="taxableamountdata">
+                    <b>{{this.cgst}}</b>
+                </td>
+            </tr>
+            <tr>
+                <td class="taxableamount">
+                    <p>Discount</p>
+                </td>
+                <td class="taxableamountdata">
+                    <b>{{this.discount}}</b>
+                </td>
+            </tr>
+            <tr>
+                <td class="taxableamount">
+                    <p>Bill Amount</p>
+                </td>
+                <td class="taxableamountdata">
+                    <b>{{this.bill_amount}}</b>
+                </td>
+            </tr>
+            {{/each}}
+
+            <tr>
+                <td colspan="6">
+                    <div class="companyName">
+                        For, SILVER PALACE
+                    </div>
+                    <div>
+                        <div class="customer_signature">
+                            Customer Signature, &nbsp; &nbsp; &nbsp; Authorized Signature
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,403 @@
+require("dotenv").config();
+var jwt = require("jsonwebtoken");
+var bcrypt = require("bcrypt");
+var User = require("../models/user");
+var auth = require("../helpers/auth");
+
+const listUser = async function (req, res) {
+  let tokanData = req.headers["authorization"];
+  let offset = req?.query?.offset || 0;
+  let limit = req?.query?.limit || 10;
+  console.log("limit,offset", offset, limit);
+  auth
+    .AUTH(tokanData)
+    .then(async function (result) {
+      if (result) {
+        User.getUsers(offset, limit)
+          .then(async function (result) {
+            return res.status(200).json(result);
+          })
+          .catch(function (error) {
+            return res.status(400).json({
+              message: error,
+              statusCode: 400,
+            });
+          });
+      } else {
+        return res.status(403).json({
+          message: "Authorization error",
+          statusCode: "403",
+        });
+      }
+    })
+    .catch(function (error) {
+      return res.status(403).json({
+        message: "Authorization Error",
+        statusCode: "403",
+      });
+    });
+};
+const GetDeletedUsers = (req, res) => {
+  let tokanData = req.headers["authorization"];
+  auth
+    .AUTH(tokanData)
+    .then(async function (result) {
+      if (result) {
+        User.getDeletedUsers()
+          .then(async function (result) {
+            return res.status(200).json(result);
+          })
+          .catch(function (error) {
+            return res.status(400).json({
+              message: error,
+              statusCode: 400,
+            });
+          });
+      } else {
+        return res.status(403).json({
+          message: "Authorization error",
+          statusCode: "403",
+        });
+      }
+    })
+    .catch(function (error) {
+      return res.status(403).json({
+        message: "Authorization Error",
+        statusCode: "403",
+      });
+    });
+};
+const createUser = async function (req, res) {
+  let tokanData = req.headers["authorization"];
+  auth
+    .AUTH(tokanData)
+    .then(async function (result) {
+      if (result) {
+        if (!req.file) {
+          return res.status(400).send({
+            message: "No file received or invalid file type",
+            success: false,
+          });
+        } else {
+          User.isUserExists(req.body.email).then((isExists) => {
+            if (isExists) {
+              return res.status(400).json({
+                message: "email is taken",
+                statusCode: "400",
+              });
+            } else {
+              let image_src = req.file ? req.file.path : null;
+              console.log("image", image_src);
+              let {
+                name,
+                email,
+                password,
+                mobile_no,
+                address,
+                role_id,
+                company_id,
+              } = req.body;
+              User.AddUser({
+                name,
+                email,
+                password,
+                mobile_no,
+                address,
+                role_id,
+                company_id,
+                image_src,
+              })
+                .then(async function (result) {
+                  return res.status(200).json({
+                    message: "Succesfully! user Added",
+                    statusCode: "200",
+                  });
+                })
+                .catch(function (error) {
+                  return res.status(400).json({
+                    message: error,
+                    statusCode: 400,
+                  });
+                });
+            }
+          });
+        }
+      } else {
+        return res.status(403).json({
+          message: "Authorization error",
+          statusCode: "403",
+        });
+      }
+    })
+    .catch(function (error) {
+      return res.status(403).json({
+        message: "Authorization Error",
+        statusCode: "403",
+      });
+    });
+};
+const updateUser = (req, res) => {
+  let tokanData = req.headers["authorization"];
+  auth
+    .AUTH(tokanData)
+    .then(async function (result) {
+      if (result) {
+        User.UserGetByUUID(req.params.user_uuid)
+          .then(async function (result) {
+            if (result) {
+              let image_src = req.file ? req.file.path : req.body.image_src;
+              console.log("image", image_src);
+              if (req.body.company_id && req.body.role_id) {
+                User.Updateuser({
+                  user_id: result.user_id,
+                  name: req.body.name,
+                  email: req.body.email,
+                  password: req.body.password,
+                  mobile_no: req.body.mobile_no,
+                  address: req.body.address,
+                  role_id: req.body.role_id,
+                  company_id: req.body.company_id,
+                  image_src: image_src,
+                })
+                  .then(async function (result) {
+                    return res.status(200).json({
+                      status: "success",
+                      statusCode: "200",
+                      message: "success! user data updated suucessfully",
+                    });
+                  })
+                  .catch(function (error) {
+                    return res.status(400).json({
+                      message: error,
+                      statusCode: 400,
+                    });
+                  });
+              } else {
+                return res.status(200).json({
+                  message:
+                    "Required, please select company and select your role.",
+                  statusCode: "400",
+                });
+              }
+            } else {
+              return res.status(200).json({
+                message: "user not exist",
+                statusCode: "400",
+              });
+            }
+          })
+          .catch(function (error) {
+            return res.status(400).json({
+              message: error,
+              statusCode: 400,
+            });
+          });
+      } else {
+        return res.status(403).json({
+          message: "Authorization error",
+          statusCode: "403",
+        });
+      }
+    })
+    .catch(function (error) {
+      return res.status(403).json({
+        message: "Authorization Error",
+        statusCode: "403",
+      });
+    });
+};
+
+const PermentDeleteUser = (req, res) => {
+  const { user_uuid } = req.params;
+  console.log("user_uuid", user_uuid);
+  let tokanData = req.headers["authorization"];
+  auth
+    .AUTH(tokanData)
+    .then(function (result) {
+      if (result) {
+        User.UserGetByUUID(user_uuid).then(async function (result) {
+          if (result) {
+            User.PermentDeleteuser(result.user_id)
+              .then(async function (result) {
+                return res.status(200).json({
+                  message: "deleted successfully",
+                  statusCode: "200",
+                });
+              })
+              .catch(function (error) {
+                return res.status(400).json({
+                  message: error,
+                  statusCode: 400,
+                });
+              });
+          } else {
+            return res.status(200).json({
+              message: "user not exist",
+              statusCode: "400",
+            });
+          }
+        });
+      } else {
+        return res.status(403).json({
+          message: "Authorization error",
+          statusCode: "403",
+        });
+      }
+    })
+    .catch(function (error) {
+      return res.status(403).json({
+        message: "Authorization Error",
+        statusCode: "403",
+      });
+    });
+};
+
+const DeleteUser = (req, res) => {
+  const { user_uuid } = req.params;
+  let tokanData = req.headers["authorization"];
+  auth
+    .AUTH(tokanData)
+    .then(function (result) {
+      if (result) {
+        User.UserGetByUUID(user_uuid).then(async function (result) {
+          if (result) {
+            User.deleteuser(result.user_id)
+              .then(async function (result) {
+                return res.status(200).json({
+                  message: "deleted successfully",
+                  statusCode: "200",
+                });
+              })
+              .catch(function (error) {
+                return res.status(400).json({
+                  message: error,
+                  statusCode: 400,
+                });
+              });
+          } else {
+            return res.status(200).json({
+              message: "user not exist",
+              statusCode: "400",
+            });
+          }
+        });
+      } else {
+        return res.status(403).json({
+          message: "Authorization error",
+          statusCode: "403",
+        });
+      }
+    })
+    .catch(function (error) {
+      return res.status(403).json({
+        message: "Authorization Error",
+        statusCode: "403",
+      });
+    });
+};
+
+const Login = (req, res) => {
+  const { email, password } = req.body;
+  User.isUserExists(email).then((isExists) => {
+    if (!isExists) {
+      return res.status(400).json({
+        status: "failed",
+        message: "user not exist!",
+        statusCode: "400",
+      });
+    }
+    User.getOneUser(email).then(
+      (user) => {
+        bcrypt.compare(
+          password,
+          user.password,
+          function (error, isvalidpassword) {
+            if (error) {
+              throw error;
+            }
+            if (!isvalidpassword) {
+              return res.status(401).json({
+                status: "failed",
+                message: "invalid password!",
+                statusCode: "401",
+              });
+            } else {
+              var token = jwt.sign(
+                {
+                  id: user.user_id,
+                },
+                process.env.API_SECRET,
+                {
+                  expiresIn: 86400,
+                }
+              );
+              const id = user.user_id;
+              const name = user.name;
+              const email = user.email;
+              const role_id = user.role_id;
+              User.createUserSession({ token, id })
+                .then(function () {
+                  res.status(200).send({
+                    message: "Login successfully",
+                    status: "true",
+                    statusCode: "200",
+                    name: name,
+                    email: email,
+                    role_id: role_id,
+                    accessToken: token,
+                  });
+                })
+                .catch(function (error) {
+                  return res.status(400).json({
+                    message: error,
+                    statusCode: 400,
+                  });
+                });
+            }
+          }
+        );
+      },
+      (error) => {
+        res.status(400).json({
+          status: "false",
+          statusCode: "400",
+          message: "Error while login.",
+        });
+      }
+    );
+  });
+};
+const LogOut = (req, res) => {
+  let tokanData = req.headers["authorization"];
+  if (tokanData) {
+    auth
+      .logout(tokanData)
+      .then(async function () {
+        return res.status(200).json({
+          message: "LogOut successfully",
+          statusCode: "200",
+        });
+      })
+      .catch(function (error) {
+        return res.status(403).json({
+          message: "Authorization Error",
+          statusCode: "403",
+        });
+      });
+  } else {
+    return res.status(403).json({
+      message: "Authorization Error",
+      statusCode: "403",
+    });
+  }
+};
+module.exports = {
+  listUser,
+  GetDeletedUsers,
+  createUser,
+  updateUser,
+  PermentDeleteUser,
+  DeleteUser,
+  Login,
+  LogOut,
+};
