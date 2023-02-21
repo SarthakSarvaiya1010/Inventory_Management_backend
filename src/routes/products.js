@@ -13,6 +13,18 @@ router.get(
     res.status(400).send({ error: error.message });
   }
 );
+
+router.get(
+  "/products/list",
+  productcontroller.productlist,
+  (req, res) => {
+    res.send(req.data);
+  },
+  (error, req, res, next) => {
+    res.status(400).send({ error: error.message });
+  }
+);
+
 router.get(
   "/delete/products",
   productcontroller.GetDeletedProduct,

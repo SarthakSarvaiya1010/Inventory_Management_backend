@@ -35,6 +35,21 @@ const productlist = async function (req, res) {
       });
     });
 };
+const productlistData = async function (req, res) {
+  let data_s = filter.filter(req?.query);
+
+  products
+    .getProducts(data_s)
+    .then(async function (result) {
+      return res.status(200).json(result);
+    })
+    .catch(function (error) {
+      return res.status(400).json({
+        message: error,
+        statusCode: 400,
+      });
+    });
+};
 const GetDeletedProduct = (req, res) => {
   let tokanData = req.headers["authorization"];
   let data_s = filter.filter(req?.query);
@@ -271,4 +286,5 @@ module.exports = {
   PermentDeleteProduct,
   DeleteProduct,
   GetOneProductByID,
+  productlistData,
 };
