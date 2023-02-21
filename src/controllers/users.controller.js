@@ -298,6 +298,7 @@ const DeleteUser = (req, res) => {
 
 const Login = (req, res) => {
   const { email, password } = req.body;
+  console.log("email, password", email, password);
   User.isUserExists(email).then((isExists) => {
     if (!isExists) {
       return res.status(400).json({
