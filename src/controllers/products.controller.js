@@ -37,7 +37,7 @@ const productlist = async function (req, res) {
 };
 const productlistData = async function (req, res) {
   let data_s = filter.filter(req?.query);
-
+  console.log("data_s", data_s);
   products
     .getProducts(data_s)
     .then(async function (result) {

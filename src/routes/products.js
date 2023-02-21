@@ -16,7 +16,7 @@ router.get(
 
 router.get(
   "/products/list",
-  productcontroller.productlist,
+  productcontroller.productlistData,
   (req, res) => {
     res.send(req.data);
   },

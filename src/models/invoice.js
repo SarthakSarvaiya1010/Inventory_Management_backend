@@ -52,7 +52,7 @@ const getInvoiceListById = (invoice_id) => {
   return new Promise(function (resolve, reject) {
     pool
       .query(
-        "SELECT i.* , c.customer_name , c.address as customer_address , c.mobile_no as customer_mobile_no  From invoice i LEFT JOIN customers c ON c.customer_id = i.customer_id WHERE i.invoice_id = $1",
+        "SELECT i.* , c.customer_name , c.address as customer_address , c.mobile_no as  mobile_no  From invoice i LEFT JOIN customers c ON c.customer_id = i.customer_id WHERE i.invoice_id = $1",
         [invoice_id]
       )
       .then(function (results) {
