@@ -11,7 +11,6 @@ const hbs = require("hbs");
 const pdf = require("html-pdf");
 // const invoiceDataDummy = require("../helpers/dummyData.json");
 var converter = require("number-to-words");
-const { TIMEOUT } = require("dns");
 let timestamp = Date.now();
 let fileName = "./invoice/sample-invoice_data" + timestamp + ".pdf";
 

@@ -8,6 +8,7 @@ const path = require("path");
 const logger = require("morgan");
 const indexRouter = require("./routes/index");
 const imageRouter = require("./routes/images");
+var cors = require("cors");
 // const PDFDocument = require("pdfkit");
 // const doc = new PDFDocument();
 // const fs = require("fs");
@@ -42,7 +43,7 @@ app.use(
     extended: true,
   })
 );
-
+app.use(cors());
 app.use("/", indexRouter);
 // app.use(logger("dev"));
 app.use(express.json());
