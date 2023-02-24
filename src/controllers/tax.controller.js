@@ -2,6 +2,7 @@ require("dotenv").config();
 var auth = require("../helpers/auth");
 var tax = require("../models/tax");
 var filter = require("../helpers/filter");
+var formValidation = require("../helpers/formValidation");
 
 const TaxList = (req, res) => {
   let tokanData = req.headers["authorization"];
@@ -71,24 +72,32 @@ const GetDeletedTaxList = (req, res) => {
 
 const AddNewTax = (req, res) => {
   let tokanData = req.headers["authorization"];
+  let error = formValidation.TaxformValidation(req.body);
   auth
     .AUTH(tokanData)
     .then(async function (result) {
       if (result) {
-        tax
-          .AddNewtax(req.body)
-          .then(async function (result) {
-            return res.status(200).json({
-              message: "Succesfully! tax  Added.",
-              statusCode: "200",
+        if (!Object.keys(error).length) {
+          tax
+            .AddNewtax(req.body)
+            .then(async function (result) {
+              return res.status(200).json({
+                message: "Succesfully! tax  Added.",
+                statusCode: "200",
+              });
+            })
+            .catch(function (error) {
+              return res.status(400).json({
+                message: error,
+                statusCode: 400,
+              });
             });
-          })
-          .catch(function (error) {
-            return res.status(400).json({
-              message: error,
-              statusCode: 400,
-            });
+        } else {
+          return res.status(400).json({
+            message: error,
+            statusCode: 400,
           });
+        }
       } else {
         return res.status(403).json({
           message: "Authorization error",
@@ -107,6 +116,8 @@ const AddNewTax = (req, res) => {
 const EditTaxData = (req, res) => {
   const { tax_id } = req.params;
   let tokanData = req.headers["authorization"];
+  let error = formValidation.TaxformValidation(req.body);
+
   auth
     .AUTH(tokanData)
     .then(async function (result) {
@@ -116,29 +127,34 @@ const EditTaxData = (req, res) => {
           .then(async function (result) {
             console.log("result===>", result);
             if (result) {
-              // if (req.body.company_id && req.body.role_id) {
-              tax
-                .EditTaxdata({
-                  tax_id: tax_id,
-                  tax_name: req.body.tax_name,
-                  tax_rate: req.body.tax_rate,
-                  tax_country: req.body.tax_country,
-                  isactive: req.body.isactive,
-                })
-                .then(async function (result) {
-                  return res.status(200).json({
-                    status: "success",
-                    statusCode: "200",
-                    message: "success! tax Data  updated suucessfully",
+              if (!Object.keys(error).length) {
+                tax
+                  .EditTaxdata({
+                    tax_id: tax_id,
+                    tax_name: req.body.tax_name,
+                    tax_rate: req.body.tax_rate,
+                    tax_country: req.body.tax_country,
+                    isactive: req.body.isactive,
+                  })
+                  .then(async function (result) {
+                    return res.status(200).json({
+                      status: "success",
+                      statusCode: "200",
+                      message: "success! tax Data  updated suucessfully",
+                    });
+                  })
+                  .catch(function (error) {
+                    return res.status(400).json({
+                      message: error,
+                      statusCode: 400,
+                    });
                   });
-                })
-                .catch(function (error) {
-                  return res.status(400).json({
-                    message: error,
-                    statusCode: 400,
-                  });
+              } else {
+                return res.status(400).json({
+                  message: error,
+                  statusCode: 400,
                 });
-              // }
+              }
             } else {
               return res.status(200).json({
                 message: "user not exist",

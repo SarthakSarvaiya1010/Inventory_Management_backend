@@ -2,7 +2,7 @@ require("dotenv").config();
 var auth = require("../helpers/auth");
 var products = require("../models/products");
 var filter = require("../helpers/filter");
-
+var formValidation = require("../helpers/formValidation");
 const productlist = async function (req, res) {
   let tokanData = req.headers["authorization"];
   let data_s = filter.filter(req?.query);
@@ -85,26 +85,35 @@ const GetDeletedProduct = (req, res) => {
 };
 const createProducts = async function (req, res) {
   let tokanData = req.headers["authorization"];
+  let error = formValidation.formValidation(req.body);
+  console.log("error", error);
   auth
     .AUTH(tokanData)
     .then(async function (result) {
       if (result) {
         let image_src = req.file ? req.file.path : null;
         console.log("image", image_src);
-        products
-          .AddProduct(req.body, image_src)
-          .then(async function (result) {
-            return res.status(200).json({
-              message: "Succesfully! product Added",
-              statusCode: "200",
+        if (!Object.keys(error).length) {
+          products
+            .AddProduct(req.body, image_src)
+            .then(async function (result) {
+              return res.status(200).json({
+                message: "Succesfully! product Added",
+                statusCode: "200",
+              });
+            })
+            .catch(function (error) {
+              return res.status(400).json({
+                message: error,
+                statusCode: 400,
+              });
             });
-          })
-          .catch(function (error) {
-            return res.status(400).json({
-              message: error,
-              statusCode: 400,
-            });
+        } else {
+          return res.status(400).json({
+            message: error,
+            statusCode: "400",
           });
+        }
       } else {
         return res.status(403).json({
           message: "Authorization error",
@@ -207,35 +216,44 @@ const PermentDeleteProduct = (req, res) => {
 
 const updateProducts = (req, res) => {
   let tokanData = req.headers["authorization"];
+  let error = formValidation.formValidation(req.body);
+
   auth
     .AUTH(tokanData)
     .then(async function (result) {
       if (result) {
         let image_src = req.file ? req.file.path : req.body.image_src;
         console.log("image", image_src);
-        products
-          .updateproduct({
-            product_id: req.params.product_id,
-            product_name: req.body.product_name,
-            description: req.body.description,
-            product_type: req.body.product_type,
-            weight: req.body.weight,
-            hsn: req.body.hsn,
-            image_src: image_src,
-          })
-          .then(function (result) {
-            return res.status(200).json({
-              status: "success",
-              statusCode: "200",
-              message: "success! product updated suucessfully",
+        if (!Object.keys(error).length) {
+          products
+            .updateproduct({
+              product_id: req.params.product_id,
+              product_name: req.body.product_name,
+              description: req.body.description,
+              product_type: req.body.product_type,
+              weight: req.body.weight,
+              hsn: req.body.hsn,
+              image_src: image_src,
+            })
+            .then(function (result) {
+              return res.status(200).json({
+                status: "success",
+                statusCode: "200",
+                message: "success! product updated suucessfully",
+              });
+            })
+            .catch(function (error) {
+              return res.status(400).json({
+                message: error,
+                statusCode: 400,
+              });
             });
-          })
-          .catch(function (error) {
-            return res.status(400).json({
-              message: error,
-              statusCode: 400,
-            });
+        } else {
+          return res.status(400).json({
+            message: error,
+            statusCode: "400",
           });
+        }
       } else {
         return res.status(403).json({
           message: "Authorization error",

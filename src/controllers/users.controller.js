@@ -3,17 +3,17 @@ var jwt = require("jsonwebtoken");
 var bcrypt = require("bcrypt");
 var User = require("../models/user");
 var auth = require("../helpers/auth");
+var filter = require("../helpers/filter");
 
 const listUser = async function (req, res) {
   let tokanData = req.headers["authorization"];
-  let offset = req?.query?.offset || 0;
-  let limit = req?.query?.limit || 10;
-  console.log("limit,offset", offset, limit);
+  let data_s = filter.filter(req?.query);
+
   auth
     .AUTH(tokanData)
     .then(async function (result) {
       if (result) {
-        User.getUsers(offset, limit)
+        User.getUsers(data_s)
           .then(async function (result) {
             return res.status(200).json(result);
           })
@@ -39,11 +39,13 @@ const listUser = async function (req, res) {
 };
 const GetDeletedUsers = (req, res) => {
   let tokanData = req.headers["authorization"];
+  let data_s = filter.filter(req?.query);
+
   auth
     .AUTH(tokanData)
     .then(async function (result) {
       if (result) {
-        User.getDeletedUsers()
+        User.getDeletedUsers(data_s)
           .then(async function (result) {
             return res.status(200).json(result);
           })
@@ -336,17 +338,28 @@ const Login = (req, res) => {
               const name = user.name;
               const email = user.email;
               const role_id = user.role_id;
-              User.createUserSession({ token, id })
-                .then(function () {
-                  res.status(200).send({
-                    message: "Login successfully",
-                    status: "true",
-                    statusCode: "200",
-                    name: name,
-                    email: email,
-                    role_id: role_id,
-                    accessToken: token,
-                  });
+              User.GetcompanyIdByuserId(id)
+                .then((data) => {
+                  const company_id = data?.company_id;
+                  User.createUserSession({ token, id })
+                    .then(function () {
+                      res.status(200).send({
+                        message: "Login successfully",
+                        status: "true",
+                        statusCode: "200",
+                        name: name,
+                        email: email,
+                        role_id: role_id,
+                        accessToken: token,
+                        company_id: company_id,
+                      });
+                    })
+                    .catch(function (error) {
+                      return res.status(400).json({
+                        message: error,
+                        statusCode: 400,
+                      });
+                    });
                 })
                 .catch(function (error) {
                   return res.status(400).json({

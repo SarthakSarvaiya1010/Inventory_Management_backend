@@ -3,13 +3,18 @@ var pass = require("../helpers/helper");
 var bcrypt = require("bcrypt");
 const e = require("express");
 
-const getUsers = (offset, limit) => {
+const getUsers = (data_s) => {
   let deleted_flag = "0";
+
   return new Promise(function (resolve, reject) {
     pool
       .query(
-        "SELECT user_uuid , name ,email  ,  password , mobile_no , image_src , address , role_id , isactive , deleted_flag FROM users WHERE deleted_flag = $1 ORDER BY user_id ASC limit  $2 offset  $3",
-        [deleted_flag, limit, offset]
+        `SELECT count(*) OVER() AS total_count, ROW_NUMBER() OVER(ORDER BY user_id ) AS sr_no, user_uuid , name ,email  ,  password , mobile_no , image_src , address , role_id , isactive , deleted_flag FROM users WHERE  name ${
+          data_s.whereFilter
+        } and deleted_flag = $1 ORDER BY ${
+          data_s?.orderByString ? data_s?.orderByString : "user_id"
+        } ${data_s.order} ${data_s.paging}`,
+        [deleted_flag]
       )
       .then(function (results) {
         resolve(results.rows);
@@ -20,12 +25,16 @@ const getUsers = (offset, limit) => {
   });
 };
 
-const getDeletedUsers = () => {
+const getDeletedUsers = (data_s) => {
   let deleted_flag = "1";
   return new Promise(function (resolve, reject) {
     pool
       .query(
-        "SELECT user_uuid , name ,email  ,  password , mobile_no , image_src , address , role_id , isactive , deleted_flag FROM users WHERE deleted_flag = $1 ORDER BY user_id ASC",
+        `SELECT count(*) OVER() AS total_count, ROW_NUMBER() OVER(ORDER BY user_id ) AS sr_no, user_uuid , name ,email  ,  password , mobile_no , image_src , address , role_id , isactive , deleted_flag FROM users WHERE  name ${
+          data_s.whereFilter
+        } and deleted_flag = $1 ORDER BY ${
+          data_s?.orderByString ? data_s?.orderByString : "user_id"
+        } ${data_s.order} ${data_s.paging}`,
         [deleted_flag]
       )
       .then(function (results) {
@@ -228,6 +237,21 @@ async function isUserExists(email) {
     );
   });
 }
+async function GetcompanyIdByuserId(user_id) {
+  return new Promise((resolve) => {
+    pool.query(
+      "SELECT * FROM users_company_map WHERE user_id = $1 ",
+      [user_id],
+      (error, results) => {
+        if (error) {
+          throw error;
+        }
+        return resolve(results.rows[0]);
+      }
+    );
+  });
+}
+
 async function getOneUser(email) {
   return new Promise((resolve) => {
     pool.query(
@@ -318,4 +342,5 @@ module.exports = {
   createUserSession,
   UserGetByUUID,
   UserGetByEmail,
+  GetcompanyIdByuserId,
 };

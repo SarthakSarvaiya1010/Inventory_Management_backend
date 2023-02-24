@@ -23,6 +23,16 @@ router.get(
     res.status(400).send({ error: error.message });
   }
 );
+router.get(
+  "/company_info/:id",
+  companycontroller.GetCompanyByCompanyId,
+  (req, res) => {
+    res.send(req.data);
+  },
+  (error, req, res, next) => {
+    res.status(400).send({ error: error.message });
+  }
+);
 router.post(
   "/add/company_info",
   imageUploader.upload.single("image_src"),

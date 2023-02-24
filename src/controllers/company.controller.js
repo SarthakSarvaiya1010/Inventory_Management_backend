@@ -1,15 +1,18 @@
 require("dotenv").config();
 var auth = require("../helpers/auth");
 var company = require("../models/company");
+var filter = require("../helpers/filter");
+var formValidation = require("../helpers/formValidation");
 
 const GetCompanyList = async function (req, res) {
   let tokanData = req.headers["authorization"];
+  let data_s = filter.filter(req?.query);
   auth
     .AUTH(tokanData)
     .then(async function (result) {
       if (result) {
         company
-          .getComapnyList()
+          .getComapnyList(data_s)
           .then(async function (result) {
             return res.status(200).json(result);
           })
@@ -36,12 +39,14 @@ const GetCompanyList = async function (req, res) {
 
 const GetDeletedCompany = (req, res) => {
   let tokanData = req.headers["authorization"];
+  let data_s = filter.filter(req?.query);
+
   auth
     .AUTH(tokanData)
     .then(async function (result) {
       if (result) {
         company
-          .getDeletedComapny()
+          .getDeletedComapny(data_s)
           .then(async function (result) {
             return res.status(200).json(result);
           })
@@ -65,8 +70,42 @@ const GetDeletedCompany = (req, res) => {
       });
     });
 };
+const GetCompanyByCompanyId = (req, res) => {
+  let tokanData = req.headers["authorization"];
+  const { id } = req.params;
+  auth
+    .AUTH(tokanData)
+    .then(async function (result) {
+      if (result) {
+        company
+          .getComapnyBycompanyId(id)
+          .then(async function (result) {
+            return res.status(200).json(result);
+          })
+          .catch(function (error) {
+            return res.status(400).json({
+              message: error,
+              statusCode: 400,
+            });
+          });
+      } else {
+        return res.status(403).json({
+          message: "Authorization error",
+          statusCode: "403",
+        });
+      }
+    })
+    .catch(function (error) {
+      return res.status(403).json({
+        message: "Authorization Error",
+        statusCode: "403",
+      });
+    });
+};
+
 const AddCompany_info = async function (req, res) {
   let tokanData = req.headers["authorization"];
+  let error = formValidation.CompanyformValidation(req.body);
   auth
     .AUTH(tokanData)
     .then(async function (result) {
@@ -89,30 +128,37 @@ const AddCompany_info = async function (req, res) {
             fax_no,
             tin_gst_no,
           } = req.body;
-          company
-            .AddCompany({
-              company_name,
-              image_src,
-              website,
-              phone_no,
-              mobile_no,
-              company_address,
-              terms_condition,
-              fax_no,
-              tin_gst_no,
-            })
-            .then(async function (result) {
-              return res.status(200).json({
-                message: "Succesfully! your Company Added.",
-                statusCode: "200",
+          if (!Object.keys(error).length) {
+            company
+              .AddCompany({
+                company_name,
+                image_src,
+                website,
+                phone_no,
+                mobile_no,
+                company_address,
+                terms_condition,
+                fax_no,
+                tin_gst_no,
+              })
+              .then(async function (result) {
+                return res.status(200).json({
+                  message: "Succesfully! your Company Added.",
+                  statusCode: "200",
+                });
+              })
+              .catch(function (error) {
+                return res.status(400).json({
+                  message: error,
+                  statusCode: 400,
+                });
               });
-            })
-            .catch(function (error) {
-              return res.status(400).json({
-                message: error,
-                statusCode: 400,
-              });
+          } else {
+            return res.status(400).json({
+              message: error,
+              statusCode: 400,
             });
+          }
         }
       } else {
         return res.status(403).json({
@@ -131,6 +177,8 @@ const AddCompany_info = async function (req, res) {
 
 const EditCompanyInfo = (req, res) => {
   let tokanData = req.headers["authorization"];
+  let error = formValidation.CompanyformValidation(req.body);
+
   auth
     .AUTH(tokanData)
     .then(async function (result) {
@@ -142,33 +190,39 @@ const EditCompanyInfo = (req, res) => {
               let image_src = req.file ? req.file.path : req.body.image_src;
               console.log("image", image_src);
               // if (req.body.company_id && req.body.role_id) {
-              company
-                .Editcompanyinfo({
-                  company_id: req.params.company_id,
-                  company_name: req.body.company_name,
-                  image_src: image_src,
-                  website: req.body.website,
-                  phone_no: req.body.phone_no,
-                  mobile_no: req.body.mobile_no,
-                  company_address: req.body.company_address,
-                  terms_condition: req.body.terms_condition,
-                  fax_no: req.body.fax_no,
-                  tin_gst_no: req.body.tin_gst_no,
-                })
-                .then(async function (result) {
-                  return res.status(200).json({
-                    status: "success",
-                    statusCode: "200",
-                    message: "success! company Data  updated suucessfully",
+              if (!Object.keys(error).length) {
+                company
+                  .Editcompanyinfo({
+                    company_id: req.params.company_id,
+                    company_name: req.body.company_name,
+                    image_src: image_src,
+                    website: req.body.website,
+                    phone_no: req.body.phone_no,
+                    mobile_no: req.body.mobile_no,
+                    company_address: req.body.company_address,
+                    terms_condition: req.body.terms_condition,
+                    fax_no: req.body.fax_no,
+                    tin_gst_no: req.body.tin_gst_no,
+                  })
+                  .then(async function (result) {
+                    return res.status(200).json({
+                      status: "success",
+                      statusCode: "200",
+                      message: "success! company Data  updated suucessfully",
+                    });
+                  })
+                  .catch(function (error) {
+                    return res.status(400).json({
+                      message: error,
+                      statusCode: 400,
+                    });
                   });
-                })
-                .catch(function (error) {
-                  return res.status(400).json({
-                    message: error,
-                    statusCode: 400,
-                  });
+              } else {
+                return res.status(400).json({
+                  message: error,
+                  statusCode: 400,
                 });
-              // }
+              }
             } else {
               return res.status(200).json({
                 message: "user not exist",
@@ -309,4 +363,5 @@ module.exports = {
   EditCompanyInfo,
   PermentDeleteCompany,
   DeleteCompany,
+  GetCompanyByCompanyId,
 };

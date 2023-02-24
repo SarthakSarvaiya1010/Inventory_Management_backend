@@ -1,10 +1,14 @@
 const pool = require("../../config");
-const getComapnyList = () => {
+const getComapnyList = (data_s) => {
   let delete_flag = "0";
   return new Promise(function (resolve, reject) {
     pool
       .query(
-        "SELECT * FROM company_info WHERE delete_flag = $1 ORDER BY company_id ASC",
+        `SELECT count(*) OVER() AS total_count , ROW_NUMBER() OVER(ORDER BY company_id ) AS sr_no,* FROM company_info WHERE  company_name ${
+          data_s.whereFilter
+        }and delete_flag = $1 ORDER BY ${
+          data_s?.orderByString ? data_s?.orderByString : "company_id "
+        } ${data_s.order} ${data_s.paging} `,
         [delete_flag]
       )
       .then(function (results) {
@@ -21,11 +25,30 @@ const getDeletedComapny = () => {
   return new Promise(function (resolve, reject) {
     pool
       .query(
-        "SELECT * FROM company_info WHERE delete_flag = $1 ORDER BY company_id ASC",
+        `SELECT count(*) OVER() AS total_count , ROW_NUMBER() OVER(ORDER BY company_id ) AS sr_no,* FROM company_info WHERE  company_name ${
+          data_s.whereFilter
+        }and delete_flag = $1 ORDER BY ${
+          data_s?.orderByString ? data_s?.orderByString : "company_id "
+        } ${data_s.order} ${data_s.paging} `,
         [delete_flag]
       )
       .then(function (results) {
         resolve(results.rows);
+      })
+      .catch(function (err) {
+        reject(err);
+      });
+  });
+};
+const getComapnyBycompanyId = (company_id) => {
+  return new Promise(function (resolve, reject) {
+    pool
+      .query(
+        "SELECT * FROM company_info WHERE company_id = $1 ORDER BY company_id ASC",
+        [company_id]
+      )
+      .then(function (results) {
+        resolve(results.rows[0]);
       })
       .catch(function (err) {
         reject(err);
@@ -180,4 +203,5 @@ module.exports = {
   Editcompanyinfo,
   Permentdeletedcompany,
   Deletecompany,
+  getComapnyBycompanyId,
 };
