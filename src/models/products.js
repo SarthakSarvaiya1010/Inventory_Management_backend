@@ -2,13 +2,6 @@ const pool = require("../../config");
 
 const getProducts = (data_s) => {
   let delete_flag = "0";
-  console.log(
-    `SELECT count(*) OVER() AS total_count, ROW_NUMBER() OVER(ORDER BY product_id ) AS sr_no, * FROM public.products WHERE product_name ${
-      data_s.whereFilter
-    } and delete_flag=$1 ORDER BY ${
-      data_s?.orderByString ? data_s?.orderByString : "product_id "
-    } ${data_s.order} ${data_s.paging}`
-  );
   return new Promise(function (resolve, reject) {
     pool
       .query(

@@ -178,7 +178,7 @@ const AddCompany_info = async function (req, res) {
 const EditCompanyInfo = (req, res) => {
   let tokanData = req.headers["authorization"];
   let error = formValidation.CompanyformValidation(req.body);
-
+  console.log("req.body", req.body);
   auth
     .AUTH(tokanData)
     .then(async function (result) {
