@@ -23,13 +23,6 @@ exports.filter = (data) => {
   if (data?.order != "") {
     order = data?.order || "ASC";
   }
-  console.log(
-    "data?.orderBy",
-    data?.orderBy,
-    data?.order,
-    "data?.orderByString",
-    data?.orderByString
-  );
 
   if (data?.orderBy != "") {
     orderBy = data?.orderBy;
