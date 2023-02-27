@@ -182,13 +182,15 @@ const EditCompanyInfo = (req, res) => {
   auth
     .AUTH(tokanData)
     .then(async function (result) {
+      console.log("result", result);
       if (result) {
         company
           .isCompanyExists(req.params.company_id)
           .then(async function (result) {
             if (result) {
+              console.log("result=================", result);
               let image_src = req.file ? req.file.path : req.body.image_src;
-              console.log("image", image_src);
+              console.log("image______________", image_src);
               // if (req.body.company_id && req.body.role_id) {
               if (!Object.keys(error).length) {
                 company

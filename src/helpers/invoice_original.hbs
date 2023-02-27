@@ -224,6 +224,7 @@
                 </td>
             </tr>
             {{/each}}
+            {{#each invoiceDataDummy}}
             <tr class="item">
                 <td></td>
                 <td>
@@ -237,9 +238,11 @@
                     <p>92</p>
                 </td>
                 <td>
-                    <p>1352.40</p>
+                    <p>{{this.taxable_amount}}</p>
                 </td>
             </tr>
+            {{/each}}
+
             <tr class="item">
                 {{#each toWords}}
                 <td colspan="4" rowspan="5">
