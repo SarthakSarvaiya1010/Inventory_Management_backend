@@ -24,6 +24,16 @@ router.get(
     res.status(400).send({ error: error.message });
   }
 );
+router.get(
+  "/users/:user_uuid",
+  usercontroller.GetUsersByUser_uuId,
+  (req, res) => {
+    res.send(req.data);
+  },
+  (error, req, res, next) => {
+    res.status(400).send({ error: error.message });
+  }
+);
 router.post(
   "/users",
   imageUploader.upload.single("image_src"),

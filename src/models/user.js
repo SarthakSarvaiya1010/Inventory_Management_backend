@@ -45,6 +45,18 @@ const getDeletedUsers = (data_s) => {
       });
   });
 };
+const getUserbyuser_uuid = (user_uuid) => {
+  return new Promise(function (resolve, reject) {
+    pool
+      .query("SELECT * FROM users WHERE user_uuid = $1 ", [user_uuid])
+      .then(function (results) {
+        resolve(results.rows[0]);
+      })
+      .catch(function (err) {
+        reject(err);
+      });
+  });
+};
 
 const AddUser = (request, response) => {
   const {
@@ -343,4 +355,5 @@ module.exports = {
   UserGetByUUID,
   UserGetByEmail,
   GetcompanyIdByuserId,
+  getUserbyuser_uuid,
 };

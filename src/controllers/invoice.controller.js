@@ -304,22 +304,6 @@ const AddInvoice = (req, res) => {
                       };
 
                       if (count === req?.body?.productdata.length) {
-                        console.log("test", test);
-
-                        // const pdfPath = fileName;
-                        // "./invoice/sample-invoice_data 1676630885015.pdf";
-                        // console.log("pdfPath", pdfPath);
-                        // const pdfData = fs.readFileSync(pdfPath);
-                        // console.log("pdfData");
-                        // const base64Data =
-                        //   Buffer.from(pdfData).toString("base64");
-                        // console.log("base64Data");
-                        // res.set({
-                        //   "Content-Disposition":
-                        //     'attachment; filename="file.pdf"',
-                        //   "Content-Type": "application/pdf",
-                        // });
-
                         pdf.create(html, options).toStream((err, stream) => {
                           if (err) return console.log(err);
                           stream.pipe(fs.createWriteStream(fileName));
@@ -352,33 +336,6 @@ const AddInvoice = (req, res) => {
 
                           // res.end(buffer);
                         };
-                        // pdf.create(html, options).toStream((err, stream) => {
-                        //   if (err) return console.log(err);
-                        //   stream.pipe(fs.createWriteStream(fileName));
-                        // res.attachment("invoice.pdf");
-                        // res.end(stream);
-
-                        // const pdfPath = "path/to/pdf/file.pdf";
-                        // const pdfPath =
-                        //   "./invoice/sample-invoice_data " +
-                        //   timestamp +
-                        //   ".pdf";
-                        // const pdfData = fs.readFileSync(pdfPath);
-                        // const base64Data =
-                        //   Buffer.from(pdfData).toString("base64");
-                        // res.set({
-                        //   "Content-Disposition":
-                        //     'attachment; filename="file.pdf"',
-                        //   "Content-Type": "application/pdf",
-                        // });
-
-                        //   res.status(200).json({
-                        //     status: "success",
-                        //     statusCode: "200",
-                        //     invoicePdf: base64Data,
-                        //     message: "success! Create invoice  suucessfully",
-                        //   });
-                        // });
                       }
                     })
                     .catch();
@@ -423,8 +380,6 @@ const AddInvoice = (req, res) => {
 const UpdateInvoiceData = (req, res) => {
   let tokanData = req.headers["authorization"];
   let { invoice_id } = req.params;
-  console.log("invoice_id", invoice_id);
-  console.log("request", req.body);
   auth
     .AUTH(tokanData)
     .then(async function (result) {
@@ -437,11 +392,130 @@ const UpdateInvoiceData = (req, res) => {
               invoice
                 .UpdateinvoiceInfo(req.body, invoice_id)
                 .then(async function (result) {
-                  return res.status(200).json({
-                    status: "success",
-                    statusCode: "200",
-                    message: "success! invoice data updated suucessfully",
+                  // return res.status(200).json({
+                  //   status: "success",
+                  //   statusCode: "200",
+                  //   message: "success! invoice data updated suucessfully",
+                  // });
+                  let invoiceDataDummy = [
+                    {
+                      customer_name: result[0]?.customer_name,
+                      bill_no: req?.body?.bill_no,
+                      customer_address: result[0]?.address,
+                      customer_mobile_no: result[0]?.mobile_no,
+                      gst: result[0]?.customer_gst,
+                      taxable_amount: req?.body?.taxable_amount,
+                      sgst: req?.body?.sgst,
+                      cgst: req?.body?.cgst,
+                      discount: req?.body?.discount,
+                      bill_amount: req?.body?.bill_amount,
+                    },
+                  ];
+                  const contentOri = await readFile(
+                    "src/helpers/invoice_original.hbs",
+                    "utf8"
+                  );
+                  const contentDup = await readFile(
+                    "src/helpers/invoice_duplicate.hbs",
+                    "utf8"
+                  );
+                  const template = hbs.compile(contentOri + contentDup);
+                  // new Date(invoiceDataDummy[0].invoice_date);
+                  let date = [
+                    {
+                      date: req?.body?.invoice_date,
+                    },
+                  ];
+                  const test = [];
+
+                  const productdatatyp = req.body.productdata;
+                  let count = 0;
+
+                  req?.body?.productdata.map((e, index) => {
+                    index++;
+                    product
+                      .getProductById(e.product_id)
+                      .then(async function (result) {
+                        test.push({
+                          product_name: result?.product_name,
+                          bill_no: index,
+                          hsn: e?.hsn,
+                          weight: e?.weight,
+                          rate: e?.rate,
+                          amount: e?.amount,
+                        });
+                        count++;
+                        const toWords = [
+                          {
+                            toWords: converter.toWords(req?.body?.bill_amount),
+                          },
+                        ];
+                        if (
+                          count === req?.body?.productdata.length &&
+                          req?.body?.productdata.length <= 10
+                        ) {
+                          [...Array(7 - req.body.productdata.length)].map((e) =>
+                            test.push({})
+                          );
+                        }
+                        const html = template({
+                          invoiceDataDummy,
+                          test,
+                          productdatatyp,
+                          toWords,
+                          date,
+                        });
+
+                        const options = {
+                          base: `${req.protocol}://${req.get("host")}`, // http://localhost:3000
+                          format: "letter",
+                        };
+
+                        if (count === req?.body?.productdata.length) {
+                          pdf.create(html, options).toStream((err, stream) => {
+                            if (err) return console.log(err);
+                            stream.pipe(fs.createWriteStream(fileName));
+                            // res.attachment("invoice.pdf");
+                            // res.end(stream);
+                            // res.status(400).json({
+                            //   status: "success",
+                            //   statusCode: "200",
+                            //   message: "success! Create invoice  suucessfully",
+                            // });
+                            setTimeout(() => {
+                              pdfCall();
+                            }, 5000);
+                          });
+                          const pdfCall = () => {
+                            const pdfPath = fileName;
+                            // "./invoice/sample-invoice_data 1676630885015.pdf";
+                            console.log("pdfPath", pdfPath);
+                            const pdfData = fs.readFileSync(pdfPath);
+                            console.log("pdfData");
+                            const base64Data =
+                              Buffer.from(pdfData).toString("base64");
+                            console.log("base64Data");
+                            res.status(200).json({
+                              status: "success",
+                              statusCode: "200",
+                              invoicePdf: base64Data,
+                              message: "success! Create invoice  suucessfully",
+                            });
+
+                            // res.end(buffer);
+                          };
+                        }
+                      })
+                      .catch();
                   });
+                })
+                .catch(function (error) {
+                  return res.status(400).json({
+                    message: error,
+                    statusCode: 400,
+                  });
+                  // });
+                  // })
                 })
                 .catch(function (error) {
                   return res.status(400).json({

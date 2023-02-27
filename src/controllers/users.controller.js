@@ -69,6 +69,38 @@ const GetDeletedUsers = (req, res) => {
       });
     });
 };
+const GetUsersByUser_uuId = (req, res) => {
+  let tokanData = req.headers["authorization"];
+  const { user_uuid } = req.params;
+
+  auth
+    .AUTH(tokanData)
+    .then(async function (result) {
+      if (result) {
+        User.getUserbyuser_uuid(user_uuid)
+          .then(async function (result) {
+            return res.status(200).json(result);
+          })
+          .catch(function (error) {
+            return res.status(400).json({
+              message: error,
+              statusCode: 400,
+            });
+          });
+      } else {
+        return res.status(403).json({
+          message: "Authorization error",
+          statusCode: "403",
+        });
+      }
+    })
+    .catch(function (error) {
+      return res.status(403).json({
+        message: "Authorization Error",
+        statusCode: "403",
+      });
+    });
+};
 const createUser = async function (req, res) {
   let tokanData = req.headers["authorization"];
   auth
@@ -412,6 +444,7 @@ module.exports = {
   updateUser,
   PermentDeleteUser,
   DeleteUser,
+  GetUsersByUser_uuId,
   Login,
   LogOut,
 };
