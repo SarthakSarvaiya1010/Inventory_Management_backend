@@ -48,7 +48,10 @@ const getDeletedUsers = (data_s) => {
 const getUserbyuser_uuid = (user_uuid) => {
   return new Promise(function (resolve, reject) {
     pool
-      .query("SELECT * FROM users WHERE user_uuid = $1 ", [user_uuid])
+      .query(
+        "SELECT user_uuid , name ,email  ,  password , mobile_no , image_src , address , role_id , isactive , deleted_flag  FROM users WHERE user_uuid = $1 ",
+        [user_uuid]
+      )
       .then(function (results) {
         resolve(results.rows[0]);
       })

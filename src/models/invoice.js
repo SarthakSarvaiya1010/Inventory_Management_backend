@@ -34,7 +34,7 @@ const getInvoiceDeleteList = (data_s) => {
       .query(
         `SELECT  count(*) OVER() AS total_count, ROW_NUMBER() OVER(ORDER BY i.bill_no) AS sr_no ,i.* , c.customer_name , c.address as customer_address , c.mobile_no as mobile_no  FROM invoice i LEFT JOIN customers c ON c.customer_id = i.customer_id  WHERE c.customer_name ${
           data_s.whereFilter
-        } and c.delete_flag=$1 ORDER BY ${
+        } and i.delete_flag=$1 ORDER BY ${
           data_s?.orderByString ? data_s?.orderByString : " i.bill_no"
         } ${data_s.order} ${data_s.paging}`,
         [delete_flag]
