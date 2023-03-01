@@ -307,20 +307,31 @@ const AddInvoice = (req, res) => {
 
                       if (count === req?.body?.productdata.length) {
                         console.log("req?.body?.productdata.length", count);
-                        pdf.create(html, options).toStream((err, stream) => {
-                          if (err) return console.log(err);
-                          stream.pipe(fs.createWriteStream(fileName));
-                          // res.attachment("invoice.pdf");
-                          // res.end(stream);
-                          // res.status(400).json({
-                          //   status: "success",
-                          //   statusCode: "200",
-                          //   message: "success! Create invoice  suucessfully",
-                          // });
-                          setTimeout(() => {
-                            pdfCall();
-                          }, 3000);
-                        });
+                        pdf
+                          .create(html, options, {
+                            childProcessOptions: {
+                              env: {
+                                OPENSSL_CONF: "/dev/null",
+                              },
+                            },
+                          })
+                          .toStream((err, stream) => {
+                            if (err) return console.log(err);
+                            stream.pipe(fs.createWriteStream(fileName));
+                            // res.attachment("invoice.pdf");
+                            // res.end(stream);
+                            // res.status(400).json({
+                            //   status: "success",
+                            //   statusCode: "200",
+                            //   message: "success! Create invoice  suucessfully",
+                            // });
+                            setTimeout(() => {
+                              pdfCall();
+                            }, 2000);
+                            console.log(
+                              "helllo pdf+++++++++++++++++++++++++++++++++"
+                            );
+                          });
                         const pdfCall = () => {
                           const pdfPath = fileName;
                           // "./invoice/sample-invoice_data 1676630885015.pdf";
