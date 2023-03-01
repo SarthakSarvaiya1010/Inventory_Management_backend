@@ -264,10 +264,12 @@ const AddInvoice = (req, res) => {
                 let count = 0;
 
                 req?.body?.productdata.map((e, index) => {
+                  console.log("e", e);
                   index++;
                   product
                     .getProductById(e.product_id)
                     .then(async function (result) {
+                      console.log("result", result);
                       test.push({
                         product_name: result?.product_name,
                         bill_no: index,
