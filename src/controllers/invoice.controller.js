@@ -304,6 +304,7 @@ const AddInvoice = (req, res) => {
                       };
 
                       if (count === req?.body?.productdata.length) {
+                        console.log("req?.body?.productdata.length", count);
                         pdf.create(html, options).toStream((err, stream) => {
                           if (err) return console.log(err);
                           stream.pipe(fs.createWriteStream(fileName));
