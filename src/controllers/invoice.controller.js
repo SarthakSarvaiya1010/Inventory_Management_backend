@@ -318,7 +318,7 @@ const AddInvoice = (req, res) => {
                           // });
                           setTimeout(() => {
                             pdfCall();
-                          }, 2000);
+                          }, 1000);
                         });
                         const pdfCall = () => {
                           const pdfPath = test_data_1;
