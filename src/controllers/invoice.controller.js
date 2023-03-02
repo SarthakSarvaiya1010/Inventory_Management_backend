@@ -265,12 +265,10 @@ const AddInvoice = (req, res) => {
                 let count = 0;
 
                 req?.body?.productdata.map((e, index) => {
-                  console.log("e", e);
                   index++;
                   product
                     .getProductById(e.product_id)
                     .then(async function (result) {
-                      console.log("result", result);
                       test.push({
                         product_name: result?.product_name,
                         bill_no: index,
@@ -307,7 +305,6 @@ const AddInvoice = (req, res) => {
                       };
 
                       if (count === req?.body?.productdata.length) {
-                        console.log("req?.body?.productdata.length", count);
                         pdf.create(html, options).toStream((err, stream) => {
                           if (err) return console.log(err);
                           stream.pipe(fs.createWriteStream(fileName));
@@ -328,12 +325,9 @@ const AddInvoice = (req, res) => {
                         const pdfCall = () => {
                           const pdfPath = fileName;
                           // "./invoice/sample-invoice_data 1676630885015.pdf";
-                          console.log("pdfPath", pdfPath);
                           const pdfData = fs.readFileSync(pdfPath);
-                          console.log("pdfData");
                           const base64Data =
                             Buffer.from(pdfData).toString("base64");
-                          console.log("base64Data");
                           res.status(200).json({
                             status: "success",
                             statusCode: "200",
@@ -491,7 +485,7 @@ const UpdateInvoiceData = (req, res) => {
                             // });
                             setTimeout(() => {
                               pdfCall();
-                            }, 5000);
+                            }, 3000);
                           });
                           const pdfCall = () => {
                             const pdfPath = fileName;
