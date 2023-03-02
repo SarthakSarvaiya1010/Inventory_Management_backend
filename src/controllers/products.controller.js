@@ -222,7 +222,7 @@ const updateProducts = (req, res) => {
     .then(async function (result) {
       if (result) {
         let image_src = req.file ? req.file.path : req.body.image_src;
-        console.log("image", image_src, req.file);
+        console.log("image", image_src, req.file.path);
         if (!Object.keys(error).length) {
           products
             .updateproduct({
