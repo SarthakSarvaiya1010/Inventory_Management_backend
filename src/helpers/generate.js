@@ -41,11 +41,7 @@ async function generatePdf() {
 
 exports.printPDF = async () => {
   console.log("printPDF start");
-  const browser = await puppeteer.launch({
-    headless: true,
-    ignoreDefaultArgs: [],
-    timeout: 3000,
-  });
+  const browser = await puppeteer.launch();
   console.log("browser");
   const page = await browser.newPage();
   console.log("pag");
@@ -59,6 +55,7 @@ exports.printPDF = async () => {
   });
   await page.goto("https://blog.risingstack.com", {
     waitUntil: "networkidle0",
+    timeout: 10000,
   });
   const pdf = await page.pdf({ format: "A4" });
   console.log("pdf");
