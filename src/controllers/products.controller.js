@@ -221,8 +221,12 @@ const updateProducts = (req, res) => {
     .AUTH(tokanData)
     .then(async function (result) {
       if (result) {
-        let image_src = req.file ? req.file.path : req.body.image_src;
-        console.log("image", image_src, req.file.path);
+        // let image_src = req.file ? req.file.path : req.body.image_src;
+
+        const { image } = req.files;
+        let image_src = image.mv(__dirname + "/upload/" + image.name);
+
+        console.log("image", image_src);
         if (!Object.keys(error).length) {
           products
             .updateproduct({
