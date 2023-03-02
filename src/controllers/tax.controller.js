@@ -125,7 +125,6 @@ const EditTaxData = (req, res) => {
         tax
           .isTaxExists(tax_id)
           .then(async function (result) {
-            console.log("result===>", result);
             if (result) {
               if (!Object.keys(error).length) {
                 tax

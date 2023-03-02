@@ -82,7 +82,6 @@ const InvoiceDeleteList = (req, res) => {
 
 const GetInvoiceListByID = (req, res) => {
   const { id } = req.params;
-  console.log("id", id);
   let tokanData = req.headers["authorization"];
   let InvoiceDataListById = [];
   auth
@@ -100,7 +99,6 @@ const GetInvoiceListByID = (req, res) => {
                   invoice = invoicelistbyid;
                   invoice["productlistdata"] = productlistbyid;
                   InvoiceDataListById.push(invoice);
-                  console.log("InvoiceDataListById", InvoiceDataListById);
                   return res.status(200).json(InvoiceDataListById);
                 }
               });
@@ -144,14 +142,11 @@ const GetInvoicePage = (req, res) => {
               .then(async function (productlist) {
                 if (productlist.length && customerlist.length) {
                   invoice.getInvoiceLastRow().then(async function (result) {
-                    console.log("result.length", result);
                     if (result[0].max !== null) {
-                      console.log("result", parseInt(result[0].max) + 1);
                       const bill_no =
                         parseInt(result[0].max) > 9
                           ? parseInt(result[0].max) + 1
                           : `0${parseInt(result[0].max) + 1}`;
-                      console.log("bill_no======>", bill_no);
                       let invoice = {};
                       invoice["bill_no"] = bill_no;
                       invoice["date"] = date;
@@ -487,12 +482,9 @@ const UpdateInvoiceData = (req, res) => {
                           const pdfCall = () => {
                             const pdfPath = fileName;
                             // "./invoice/sample-invoice_data 1676630885015.pdf";
-                            console.log("pdfPath", pdfPath);
                             const pdfData = fs.readFileSync(pdfPath);
-                            console.log("pdfData");
                             const base64Data =
                               Buffer.from(pdfData).toString("base64");
-                            console.log("base64Data");
                             res.status(200).json({
                               status: "success",
                               statusCode: "200",
@@ -560,7 +552,6 @@ const PermentDeleteInvoice = (req, res) => {
         invoice
           .IsinvoiceExistsByInvoiceId(invoice_id)
           .then(async function (result) {
-            console.log("result===>", result);
             if (result) {
               invoice
                 .Permentdeletedinvoice(invoice_id)

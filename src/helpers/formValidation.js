@@ -1,6 +1,5 @@
 exports.formValidation = (data) => {
   let error = {};
-  console.log("data", data);
   let { product_name, product_type, hsn, weight } = data;
   if (!product_name) {
     error = "Product name is missing ";
@@ -32,12 +31,11 @@ exports.formValidation = (data) => {
   //   } else if (password?.length < 6 && !validation) {
   //     error = "Password must be 6 or more characters";
   //   }
-  console.log(error);
+
   return error;
 };
 exports.TaxformValidation = (data) => {
   let error = {};
-  console.log("data", data);
   let { tax_name, tax_rate, tax_country, isactive } = data;
   if (!tax_name) {
     error = "Tax name is missing ";
@@ -48,13 +46,12 @@ exports.TaxformValidation = (data) => {
   } else if (!isactive) {
     error = "Isactive is missing";
   }
-  console.log(error);
+
   return error;
 };
 
 exports.CustomersformValidation = (data) => {
   let error = {};
-  console.log("data", data);
   let { customer_name, mobile_no, email, address } = data;
   if (!customer_name) {
     error = "Customer name is missing ";
@@ -79,7 +76,7 @@ exports.CustomersformValidation = (data) => {
 
 exports.CompanyformValidation = (data) => {
   let error = {};
-  console.log("data", data);
+
   let {
     company_name,
     website,

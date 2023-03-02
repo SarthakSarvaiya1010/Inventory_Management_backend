@@ -243,7 +243,6 @@ const updateUser = (req, res) => {
 
 const PermentDeleteUser = (req, res) => {
   const { user_uuid } = req.params;
-  console.log("user_uuid", user_uuid);
   let tokanData = req.headers["authorization"];
   auth
     .AUTH(tokanData)

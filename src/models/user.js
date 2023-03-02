@@ -323,7 +323,6 @@ async function UserGetByUUID(user_uuid) {
         if (error) {
           throw error;
         }
-        console.log("results.rows", results.rows);
         return resolve(results.rows[0]);
       }
     );

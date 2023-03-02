@@ -38,7 +38,6 @@ const productlist = async function (req, res) {
 };
 const productlistData = async function (req, res) {
   let data_s = filter.filter(req?.query);
-  console.log("data_s", data_s);
   products
     .getProducts(data_s)
     .then(async function (result) {
@@ -87,7 +86,6 @@ const GetDeletedProduct = (req, res) => {
 const createProducts = async function (req, res) {
   let tokanData = req.headers["authorization"];
   let error = formValidation.formValidation(req.body);
-  console.log("error", error);
   auth
     .AUTH(tokanData)
     .then(async function (result) {
@@ -224,7 +222,7 @@ const updateProducts = (req, res) => {
     .then(async function (result) {
       if (result) {
         let image_src = req.file ? req.file.path : req.body.image_src;
-        console.log("image", image_src);
+        console.log("image", image_src, req.file);
         if (!Object.keys(error).length) {
           products
             .updateproduct({

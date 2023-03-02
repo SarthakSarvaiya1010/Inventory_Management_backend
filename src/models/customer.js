@@ -77,7 +77,6 @@ const AddCustomer = (request, response) => {
 const EditCustomerInfo = (data) => {
   const { customer_id, customer_name, mobile_no, address, email, tin_no } =
     data;
-  console.log("adress=>", address);
   return new Promise(function (resolve, reject) {
     if (!customer_id) {
       console.log("error:customer_id is missing");

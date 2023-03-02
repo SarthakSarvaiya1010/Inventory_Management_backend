@@ -1,7 +1,6 @@
 const pool = require("../../config");
 const getInvoiceList = (data_s) => {
   let delete_flag = "0";
-  console.log(data_s);
   return new Promise(function (resolve, reject) {
     pool
       .query(
@@ -22,13 +21,6 @@ const getInvoiceList = (data_s) => {
 };
 const getInvoiceDeleteList = (data_s) => {
   let delete_flag = "1";
-  console.log(
-    `SELECT  count(*) OVER() AS total_count, ROW_NUMBER() OVER(ORDER BY i.bill_no) AS sr_no ,i.* , c.customer_name , c.address as customer_address , c.mobile_no as mobile_no  FROM invoice i LEFT JOIN customers c ON c.customer_id = i.customer_id  WHERE c.customer_name ${
-      data_s.whereFilter
-    } and i.delete_flag=$1 ORDER BY ${
-      data_s?.orderByString ? data_s?.orderByString : " i.bill_no"
-    } ${data_s.order} ${data_s.paging}`
-  );
   return new Promise(function (resolve, reject) {
     pool
       .query(
@@ -56,7 +48,6 @@ const getInvoiceListById = (invoice_id) => {
         [invoice_id]
       )
       .then(function (results) {
-        console.log("results==,", results);
         resolve(results.rows[0]);
       })
       .catch(function (error) {
@@ -72,7 +63,6 @@ const getproductListByInvoiceId = (invoice_id) => {
         [invoice_id]
       )
       .then(function (results) {
-        console.log("results==,", results);
         resolve(results.rows);
       })
       .catch(function (error) {
@@ -110,7 +100,7 @@ const Addinvoice = (req, res) => {
   let isactive = "1";
   let delete_flag = "0";
   let company_id = 1;
-  console.log("req", req.productdata);
+
   return new Promise(function (resolve, reject) {
     pool
       .query(
@@ -137,7 +127,7 @@ const Addinvoice = (req, res) => {
       )
       .then((ress) => {
         const invoice_id = ress?.rows[0]?.invoice_id;
-        console.log("invoice_id", invoice_id);
+
         req?.productdata?.map((data) => {
           pool
             .query(
@@ -207,7 +197,6 @@ const UpdateinvoiceInfo = (req, invoice_id, res) => {
     company_id,
     productdata,
   } = req;
-  console.log("req.paroducdata", req.productdata);
   return new Promise(function (resolve, reject) {
     if (!invoice_id) {
       console.log("error: invoice_id missing");
@@ -235,7 +224,6 @@ const UpdateinvoiceInfo = (req, invoice_id, res) => {
           ])
         )
         .then((ress) => {
-          console.log("ressss", ress);
           req.productdata.map(async (data) => {
             try {
               const result = await pool.query(
@@ -262,7 +250,6 @@ const UpdateinvoiceInfo = (req, invoice_id, res) => {
 };
 const Permentdeletedinvoice = (invoice_id) => {
   return new Promise(function (resolve, reject) {
-    console.log("invoice_id", invoice_id);
     if (!invoice_id) {
       console.log("error: invoice_id missing");
       reject("error: invoice_id missing");
@@ -285,7 +272,6 @@ const Permentdeletedinvoice = (invoice_id) => {
   });
 };
 const Deleteinvoice = (invoice_id) => {
-  console.log("invoice_id", invoice_id);
   let delete_flag = "1";
   return new Promise(function (resolve, reject) {
     if (!invoice_id) {

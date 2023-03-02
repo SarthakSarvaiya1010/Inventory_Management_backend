@@ -178,7 +178,6 @@ const AddCompany_info = async function (req, res) {
 const EditCompanyInfo = (req, res) => {
   let tokanData = req.headers["authorization"];
   let error = formValidation.CompanyformValidation(req.body);
-  console.log("req.body", req.body);
   auth
     .AUTH(tokanData)
     .then(async function (result) {
@@ -188,9 +187,8 @@ const EditCompanyInfo = (req, res) => {
           .isCompanyExists(req.params.company_id)
           .then(async function (result) {
             if (result) {
-              console.log("result=================", result);
               let image_src = req.file ? req.file.path : req.body.image_src;
-              console.log("image______________", image_src);
+
               // if (req.body.company_id && req.body.role_id) {
               if (!Object.keys(error).length) {
                 company

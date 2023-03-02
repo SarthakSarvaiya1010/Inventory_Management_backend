@@ -2,7 +2,6 @@ var pool = require("../../config");
 
 const GetTaxList = (data_s) => {
   let delete_flag = "0";
-  console.log(data_s);
   return new Promise(function (resolve, reject) {
     pool
       .query(
@@ -112,7 +111,6 @@ const PermanentDeletetax = (tax_id) => {
   });
 };
 const Deletetax = (tax_id) => {
-  console.log("tax_id---->", tax_id);
   let delete_flag = "1";
   return new Promise(function (resolve, reject) {
     if (!tax_id) {
