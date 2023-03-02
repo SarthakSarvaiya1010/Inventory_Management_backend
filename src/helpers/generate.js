@@ -41,7 +41,11 @@ async function generatePdf() {
 
 exports.printPDF = async () => {
   console.log("printPDF start");
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({
+    headless: true,
+    ignoreDefaultArgs: [],
+    timeout: 3000,
+  });
   console.log("browser");
   const page = await browser.newPage();
   console.log("pag");
