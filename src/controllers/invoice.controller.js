@@ -298,10 +298,10 @@ const AddInvoice = (req, res) => {
                         toWords,
                         date,
                       });
-                      let test_data_1;
+                      let pdf_data;
                       const options = {
                         base: `${req.protocol}://${req.get("host")}`, // http://localhost:3000
-                        format: "letter",
+                        format: "A4",
                       };
 
                       if (count === req?.body?.productdata.length) {
@@ -310,7 +310,7 @@ const AddInvoice = (req, res) => {
                           // stream.pipe(fs.createWriteStream(fileName));
                           // res.attachment("invoice.pdf");
                           // res.end(buffer);
-                          test_data_1 = buffer;
+                          pdf_data = buffer;
                           // res.status(400).json({
                           //   status: "success",
                           //   statusCode: "200",
@@ -318,14 +318,13 @@ const AddInvoice = (req, res) => {
                           // });
                           setTimeout(() => {
                             pdfCall();
-                          }, 1000);
+                          }, 500);
                         });
                         const pdfCall = () => {
-                          const pdfPath = test_data_1;
                           // "./invoice/sample-invoice_data 1676630885015.pdf";
                           // const pdfData = fs.readFileSync(test_data_1);
                           const base64Data =
-                            Buffer.from(test_data_1).toString("base64");
+                            Buffer.from(pdf_data).toString("base64");
                           res.status(200).json({
                             status: "success",
                             statusCode: "200",

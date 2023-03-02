@@ -5,13 +5,6 @@ exports.filter = (data) => {
   let page = data?.page || 1;
 
   let test = data?.orderByString?.split("/");
-  console.log(
-    "data?.order",
-    data?.orderByString,
-    test,
-    "data?.order",
-    data?.orderBy
-  );
 
   let order = data?.order
     ? data?.order
