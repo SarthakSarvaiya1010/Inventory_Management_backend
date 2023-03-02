@@ -2,6 +2,7 @@ require("dotenv").config();
 var auth = require("../helpers/auth");
 var products = require("../models/products");
 var filter = require("../helpers/filter");
+var test = require("../helpers/generate");
 var formValidation = require("../helpers/formValidation");
 const productlist = async function (req, res) {
   let tokanData = req.headers["authorization"];
@@ -10,10 +11,22 @@ const productlist = async function (req, res) {
     .AUTH(tokanData)
     .then(async function (result) {
       if (result) {
+        // test.printPDF();
         products
           .getProducts(data_s)
           .then(async function (result) {
-            return res.status(200).json(result);
+            test
+              .printPDF()
+              .then((pdf) => {
+                res.set({
+                  "Content-Type": "application/pdf",
+                  "Content-Length": pdf.length,
+                });
+                res.send(pdf);
+              })
+              .catch(function () {
+                return res.status(200).json(result);
+              });
           })
           .catch(function (error) {
             return res.status(400).json({

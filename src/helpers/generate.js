@@ -3,6 +3,7 @@ const path = require("path");
 const utils = require("util");
 const puppeteer = require("puppeteer");
 const hb = require("handlebars");
+
 const readFile = utils.promisify(fs.readFile);
 async function getTemplateHtml() {
   console.log("Loading template file in memory");
@@ -36,4 +37,17 @@ async function generatePdf() {
       console.error(err);
     });
 }
-generatePdf();
+// generatePdf();
+
+exports.printPDF = async () => {
+  console.log("printPDF start");
+  const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
+  await page.goto("https://blog.risingstack.com", {
+    waitUntil: "networkidle0",
+  });
+  const pdf = await page.pdf({ format: "A4" });
+
+  await browser.close();
+  return pdf;
+};

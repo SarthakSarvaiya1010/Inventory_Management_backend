@@ -327,7 +327,7 @@ const AddInvoice = (req, res) => {
                             // });
                             setTimeout(() => {
                               pdfCall();
-                            }, 2000);
+                            }, 3000);
                             console.log(
                               "helllo pdf+++++++++++++++++++++++++++++++++"
                             );
