@@ -43,11 +43,20 @@ exports.printPDF = async () => {
   console.log("printPDF start");
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
+  await page.type("#email", process.env.PDF_USER);
+  await page.type("#password", process.env.PDF_PASSWORD);
+  await page.click("#submit");
+
+  await page.addStyleTag({
+    content:
+      ".nav { display: none} .navbar { border: 0px} #print-button {display: none}",
+  });
   await page.goto("https://blog.risingstack.com", {
     waitUntil: "networkidle0",
   });
   const pdf = await page.pdf({ format: "A4" });
-
+  console.log("pdf");
   await browser.close();
+  console.log("browser.close");
   return pdf;
 };
