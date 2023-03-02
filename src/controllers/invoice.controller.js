@@ -298,18 +298,19 @@ const AddInvoice = (req, res) => {
                         toWords,
                         date,
                       });
-
+                      let test_data_1;
                       const options = {
                         base: `${req.protocol}://${req.get("host")}`, // http://localhost:3000
                         format: "letter",
                       };
 
                       if (count === req?.body?.productdata.length) {
-                        pdf.create(html, options).toStream((err, stream) => {
+                        pdf.create(html, options).toBuffer((err, buffer) => {
                           if (err) return console.log(err);
-                          stream.pipe(fs.createWriteStream(fileName));
+                          // stream.pipe(fs.createWriteStream(fileName));
                           // res.attachment("invoice.pdf");
-                          // res.end(stream);
+                          // res.end(buffer);
+                          test_data_1 = buffer;
                           // res.status(400).json({
                           //   status: "success",
                           //   statusCode: "200",
@@ -317,17 +318,14 @@ const AddInvoice = (req, res) => {
                           // });
                           setTimeout(() => {
                             pdfCall();
-                          }, 3000);
-                          console.log(
-                            "helllo pdf+++++++++++++++++++++++++++++++++"
-                          );
+                          }, 2000);
                         });
                         const pdfCall = () => {
-                          const pdfPath = fileName;
+                          const pdfPath = test_data_1;
                           // "./invoice/sample-invoice_data 1676630885015.pdf";
-                          const pdfData = fs.readFileSync(pdfPath);
+                          // const pdfData = fs.readFileSync(test_data_1);
                           const base64Data =
-                            Buffer.from(pdfData).toString("base64");
+                            Buffer.from(test_data_1).toString("base64");
                           res.status(200).json({
                             status: "success",
                             statusCode: "200",
@@ -721,6 +719,7 @@ const checkpdf = (req, res) => {
       });
       res.send(pdf);
     })
+
     .catch(function (error) {
       return res.status(400).json({
         message: error,
