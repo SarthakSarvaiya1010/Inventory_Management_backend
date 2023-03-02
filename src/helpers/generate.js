@@ -45,9 +45,9 @@ exports.printPDF = async () => {
   console.log("browser");
   const page = await browser.newPage();
   console.log("pag");
-  await page.type("#email", process.env.PDF_USER);
-  await page.type("#password", process.env.PDF_PASSWORD);
-  await page.click("#submit");
+  // await page.type("#email", process.env.PDF_USER);
+  // await page.type("#password", process.env.PDF_PASSWORD);
+  // await page.click("#submit");
 
   await page.addStyleTag({
     content:
