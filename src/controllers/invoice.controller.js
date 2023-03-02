@@ -13,6 +13,7 @@ const pdf = require("html-pdf");
 var converter = require("number-to-words");
 let timestamp = Date.now();
 let fileName = "./invoice/sample-invoice_data" + timestamp + ".pdf";
+var test = require("../helpers/generate");
 
 const InvoiceList = (req, res) => {
   let tokanData = req.headers["authorization"];
@@ -724,6 +725,24 @@ const InvoiceGetPdf = async (req, res) => {
   // });
 };
 
+const checkpdf = (req, res) => {
+  test
+    .printPDF()
+    .then((pdf) => {
+      res.set({
+        "Content-Type": "application/pdf",
+        "Content-Length": pdf.length,
+      });
+      res.send(pdf);
+    })
+    .catch(function (error) {
+      return res.status(400).json({
+        message: error,
+        statusCode: 400,
+      });
+    });
+};
+
 module.exports = {
   InvoiceList,
   InvoiceDeleteList,
@@ -734,4 +753,5 @@ module.exports = {
   PermentDeleteInvoice,
   DeleteInvoice,
   InvoiceGetPdf,
+  checkpdf,
 };
