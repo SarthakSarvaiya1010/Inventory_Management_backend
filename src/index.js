@@ -22,8 +22,8 @@ app.use(cors());
 app.use("/", indexRouter);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "./public")));
-app.use("./public", express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
+app.use("public", express.static("public"));
 app.use("/images", imageRouter);
 
 app.listen(port, () => {
