@@ -33,9 +33,10 @@
     "phantomjs": "^2.1.7",
     "phantomjs-prebuilt": "^2.1.13",
     "puppeteer": "^19.7.2",
-    "sharp": "^0.31.3"
+    "sharp": "^0.30.4"
   },
   "devDependencies": {
-    "@types/multer": "^1.4.7"
+    "@types/multer": "^1.4.7",
+    "@types/sharp": "^0.31.1"
   }
 }
