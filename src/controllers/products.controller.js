@@ -224,7 +224,7 @@ const updateProducts = (req, res) => {
     .then(async function (result) {
       if (result) {
         let image_src = req.file ? req.file.path : req.body.image_src;
-        console.log("req.file");
+        console.log("req.file", req.file, image_src);
         if (!Object.keys(error).length) {
           products
             .updateproduct({
@@ -242,11 +242,11 @@ const updateProducts = (req, res) => {
               //   statusCode: "200",
               //   message: "success! product updated suucessfully",
               // });
-              await sharp(req.file.buffer)
+              let test = sharp(req.file.buffer)
                 .resize({ width: 250, height: 250 })
                 .png()
                 .toFile(__dirname + `/images/${req.file.originalname}`);
-              res.status(201).send("Image uploaded succesfully");
+              res.status(201).send("Image uploaded succesfully", test);
             })
             .catch(function (error) {
               return res.status(400).json({
