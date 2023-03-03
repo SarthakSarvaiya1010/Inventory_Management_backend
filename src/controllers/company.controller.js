@@ -3,7 +3,6 @@ var auth = require("../helpers/auth");
 var company = require("../models/company");
 var filter = require("../helpers/filter");
 var formValidation = require("../helpers/formValidation");
-const { json } = require("stream/consumers");
 
 const GetCompanyList = async function (req, res) {
   let tokanData = req.headers["authorization"];
