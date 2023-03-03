@@ -6,9 +6,9 @@ const storage = multer.diskStorage({
     console.log("🚀 ~ file: upload.ts:11 ~ file");
     cb(
       null,
-      path.join(
+      path.join(  
         path.dirname("/Inventory_Management_backend/render/"),
-        "/Public/images/"
+        "/Inventory_Management_backend/Public/images/"
       )
     );
   },
