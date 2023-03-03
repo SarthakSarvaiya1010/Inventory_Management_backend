@@ -218,13 +218,14 @@ const PermentDeleteProduct = (req, res) => {
 const updateProducts = (req, res) => {
   let tokanData = req.headers["authorization"];
   let error = formValidation.formValidation(req.body);
-  console.log("req.body", req.body);
   auth
     .AUTH(tokanData)
     .then(async function (result) {
       if (result) {
         let image_src = req.file ? req.file.path : req.body.image_src;
-        console.log("req.file", req.file, image_src);
+        const base64Data = Buffer.from(req.file.buffer).toString("base64");
+        console.log("req.file", req.file, req.file.buffer, base64Data);
+
         if (!Object.keys(error).length) {
           products
             .updateproduct({
@@ -242,11 +243,14 @@ const updateProducts = (req, res) => {
               //   statusCode: "200",
               //   message: "success! product updated suucessfully",
               // });
-              let test = sharp(req.file.buffer)
+              await sharp(req.file.buffer)
                 .resize({ width: 250, height: 250 })
                 .png()
-                .toFile(__dirname + `/images/${req.file.originalname}`);
-              res.status(201).send("Image uploaded succesfully", test);
+                .toFile(__dirname + `/Public/images/${req.file.originalname}`);
+              res.status(200).json({
+                message: "Image uploaded succesfully",
+                statusCode: "200",
+              });
             })
             .catch(function (error) {
               return res.status(400).json({
