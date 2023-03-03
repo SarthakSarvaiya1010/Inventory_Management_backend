@@ -216,11 +216,13 @@ const PermentDeleteProduct = (req, res) => {
 const updateProducts = (req, res) => {
   let tokanData = req.headers["authorization"];
   let error = formValidation.formValidation(req.body);
+  console.log("req.body", req.body);
   auth
     .AUTH(tokanData)
     .then(async function (result) {
       if (result) {
         let image_src = req.file ? req.file.path : req.body.image_src;
+        console.log("req.file", req.file);
         if (!Object.keys(error).length) {
           products
             .updateproduct({
