@@ -3,7 +3,6 @@ var auth = require("../helpers/auth");
 var products = require("../models/products");
 var filter = require("../helpers/filter");
 var formValidation = require("../helpers/formValidation");
-var zlib = require("zlib");
 
 const productlist = async function (req, res) {
   let tokanData = req.headers["authorization"];
@@ -16,6 +15,8 @@ const productlist = async function (req, res) {
         products
           .getProducts(data_s)
           .then(async function (result) {
+            // let productdata={}
+            // productdata.[""]
             return res.status(200).json(result);
           })
           .catch(function (error) {
@@ -225,8 +226,7 @@ const updateProducts = (req, res) => {
         const base64Data = req?.file
           ? Buffer.from(req?.file?.buffer).toString("base64")
           : null;
-        var compressed = zlib.deflate(base64Data);
-        let image_src = compressed;
+        let image_src = base64Data;
         if (!Object.keys(error).length) {
           products
             .updateproduct({
