@@ -2,6 +2,8 @@ require("dotenv").config();
 var auth = require("../helpers/auth");
 var products = require("../models/products");
 var filter = require("../helpers/filter");
+const sharp = require("sharp");
+
 var formValidation = require("../helpers/formValidation");
 const productlist = async function (req, res) {
   let tokanData = req.headers["authorization"];
