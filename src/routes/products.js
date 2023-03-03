@@ -50,7 +50,7 @@ router.post(
 );
 router.put(
   "/edit/products/:product_id",
-  // imageUploader.upload.single("image_src"),
+  imageUploader.upload.single("image_src"),
   productcontroller.updateProducts,
   (req, res) => {
     res.send(req.data);

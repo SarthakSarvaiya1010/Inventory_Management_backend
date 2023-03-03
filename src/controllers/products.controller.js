@@ -216,14 +216,11 @@ const PermentDeleteProduct = (req, res) => {
 const updateProducts = (req, res) => {
   let tokanData = req.headers["authorization"];
   let error = formValidation.formValidation(req.body);
-
   auth
     .AUTH(tokanData)
     .then(async function (result) {
       if (result) {
         let image_src = req.file ? req.file.path : req.body.image_src;
-
-        console.log("image", image_src);
         if (!Object.keys(error).length) {
           products
             .updateproduct({
@@ -245,7 +242,7 @@ const updateProducts = (req, res) => {
             .catch(function (error) {
               return res.status(400).json({
                 message: error,
-                statusCode: 400,
+                statusCode: "400",
               });
             });
         } else {
@@ -281,7 +278,7 @@ const GetOneProductByID = async function (req, res) {
             return res.status(200).json(result);
           })
           .catch(function (error) {
-            return res.status(400).json({ message: error, statusCode: 400 });
+            return res.status(400).json({ message: error, statusCode: "400" });
           });
       } else {
         return res
