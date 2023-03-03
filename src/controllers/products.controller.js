@@ -3,6 +3,7 @@ var auth = require("../helpers/auth");
 var products = require("../models/products");
 var filter = require("../helpers/filter");
 var formValidation = require("../helpers/formValidation");
+var zlib = require("zlib");
 
 const productlist = async function (req, res) {
   let tokanData = req.headers["authorization"];
