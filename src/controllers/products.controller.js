@@ -222,8 +222,10 @@ const updateProducts = (req, res) => {
     .AUTH(tokanData)
     .then(async function (result) {
       if (result) {
-        let image_src = req.file ? req.file.path : req.body.image_src;
-        const base64Data = Buffer.from(req.file.buffer).toString("base64");
+        const base64Data = req?.file
+          ? Buffer.from(req?.file?.buffer).toString("base64")
+          : null;
+        let image_src = base64Data;
         console.log("req.file", req.file, req.file.buffer);
 
         if (!Object.keys(error).length) {
@@ -238,18 +240,10 @@ const updateProducts = (req, res) => {
               image_src: image_src,
             })
             .then(async function (result) {
-              // return res.status(200).json({
-              //   status: "success",
-              //   statusCode: "200",
-              //   message: "success! product updated suucessfully",
-              // });
-              // await sharp(req.file.buffer)
-              //   .resize({ width: 250, height: 250 })
-              //   .png()
-              //   .toFile(__dirname + `/Public/images/${req.file.originalname}`);
-              res.status(200).json({
-                message: "Image uploaded succesfully",
+              return res.status(200).json({
+                status: "success",
                 statusCode: "200",
+                message: "success! product updated suucessfully",
                 base64Data: base64Data,
               });
             })
