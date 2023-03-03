@@ -216,7 +216,7 @@ const PermentDeleteProduct = (req, res) => {
 const updateProducts = (req, res) => {
   let tokanData = req.headers["authorization"];
   let error = formValidation.formValidation(req.body);
-  console.log("req.body");
+  console.log("req.body", req.body);
   auth
     .AUTH(tokanData)
     .then(async function (result) {
