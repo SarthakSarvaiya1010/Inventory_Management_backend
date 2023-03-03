@@ -2,9 +2,8 @@ require("dotenv").config();
 var auth = require("../helpers/auth");
 var products = require("../models/products");
 var filter = require("../helpers/filter");
-const sharp = require("sharp");
-
 var formValidation = require("../helpers/formValidation");
+
 const productlist = async function (req, res) {
   let tokanData = req.headers["authorization"];
   let data_s = filter.filter(req?.query);
@@ -74,7 +73,7 @@ const GetDeletedProduct = (req, res) => {
       } else {
         return res.status(403).json({
           message: "Authorization error",
-          statusCode: "403444",
+          statusCode: "403",
         });
       }
     })
@@ -225,9 +224,8 @@ const updateProducts = (req, res) => {
         const base64Data = req?.file
           ? Buffer.from(req?.file?.buffer).toString("base64")
           : null;
-        let image_src = base64Data;
-        console.log("req.file", req.file, req.file.buffer);
-
+        var compressed = zlib.deflate(base64Data);
+        let image_src = compressed;
         if (!Object.keys(error).length) {
           products
             .updateproduct({
