@@ -234,12 +234,17 @@ const updateProducts = (req, res) => {
               hsn: req.body.hsn,
               image_src: image_src,
             })
-            .then(function (result) {
-              return res.status(200).json({
-                status: "success",
-                statusCode: "200",
-                message: "success! product updated suucessfully",
-              });
+            .then(async function (result) {
+              // return res.status(200).json({
+              //   status: "success",
+              //   statusCode: "200",
+              //   message: "success! product updated suucessfully",
+              // });
+              await sharp(req.file.buffer)
+                .resize({ width: 250, height: 250 })
+                .png()
+                .toFile(__dirname + `/images/${req.file.originalname}`);
+              res.status(201).send("Image uploaded succesfully");
             })
             .catch(function (error) {
               return res.status(400).json({

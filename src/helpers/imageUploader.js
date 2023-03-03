@@ -11,25 +11,29 @@ const storage = multer.diskStorage({
   },
 });
 
-const fileFilter = (req, file, cb) => {
-  if (
-    file.mimetype === "image/jpeg" ||
-    file.mimetype === "image/png" ||
-    file.mimetype.split("/")[1] === "pdf"
-  ) {
-    cb(null, true);
-  } else {
-    req.fileValidationError = "Forbidden extension";
-    cb(null, false);
-  }
-};
+// const fileFilter = (req, file, cb) => {
+//   if (
+//     file.mimetype === "image/jpeg" ||
+//     file.mimetype === "image/png" ||
+//     file.mimetype.split("/")[1] === "pdf"
+//   ) {
+//     cb(null, true);
+//   } else {
+//     req.fileValidationError = "Forbidden extension";
+//     cb(null, false);
+//   }
+// };
 
 const uploads = multer({
-  storage: storage,
   limits: {
     fileSize: 307200,
   },
-  fileFilter: fileFilter,
+  fileFilter(req, file, cb) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+      return cb(new Error("Please upload a valid image file"));
+    }
+    cb(undefined, true);
+  },
 });
 
 module.exports = {
