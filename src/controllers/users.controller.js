@@ -120,7 +120,11 @@ const createUser = async function (req, res) {
                 statusCode: "400",
               });
             } else {
-              let image_src = req.file ? req.file.path : null;
+              const base64Data = req?.file
+                ? Buffer.from(req?.file?.buffer).toString("base64")
+                : null;
+              let image_src = base64Data;
+
               console.log("image", image_src);
               let {
                 name,
@@ -179,7 +183,10 @@ const updateUser = (req, res) => {
         User.UserGetByUUID(req.params.user_uuid)
           .then(async function (result) {
             if (result) {
-              let image_src = req.file ? req.file.path : req.body.image_src;
+              const base64Data = req?.file
+                ? Buffer.from(req?.file?.buffer).toString("base64")
+                : null;
+              let image_src = base64Data;
               console.log("image", image_src);
               if (req.body.company_id && req.body.role_id) {
                 User.Updateuser({
