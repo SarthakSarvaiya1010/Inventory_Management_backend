@@ -107,7 +107,7 @@ const createUser = async function (req, res) {
     .AUTH(tokanData)
     .then(async function (result) {
       if (result) {
-        if (!req.file) {
+        if (!req?.file?.buffer) {
           return res.status(400).send({
             message: "No file received or invalid file type",
             success: false,
@@ -125,7 +125,6 @@ const createUser = async function (req, res) {
                 : null;
               let image_src = base64Data;
 
-              console.log("image", image_src);
               let {
                 name,
                 email,

@@ -120,7 +120,6 @@ const AddCompany_info = async function (req, res) {
             ? Buffer.from(req?.file?.buffer).toString("base64")
             : null;
           let image_src = base64Data;
-          console.log("image", image_src);
           let {
             company_name,
             website,

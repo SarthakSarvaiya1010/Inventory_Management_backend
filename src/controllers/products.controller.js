@@ -97,7 +97,6 @@ const createProducts = async function (req, res) {
           ? Buffer.from(req?.file?.buffer).toString("base64")
           : null;
         let image_src = base64Data;
-        console.log("image");
         if (!Object.keys(error).length) {
           products
             .AddProduct(req.body, image_src)

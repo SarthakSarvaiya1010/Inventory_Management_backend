@@ -79,7 +79,7 @@ const AddUser = (request, response) => {
       hashPassword(password)
         .then(function (hash) {
           return pool.query(
-            "INSERT INTO users (name, email,password,mobile_no,image_src,address,role_id,isactive,deleted_flag) VALUES ($1, $2, $3,$4,$5,$6,$7,$8,$9)",
+            "INSERT INTO users (name, email,password,mobile_no,image_src,address,role_id,isactive,deleted_flag) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)",
             [
               name,
               email,
