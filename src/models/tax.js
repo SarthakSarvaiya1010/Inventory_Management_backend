@@ -66,7 +66,7 @@ const EditTaxdata = (data) => {
     } else {
       pool
         .query(
-          "UPDATE tax  SET tax_name=$2, tax_rate=$3, tax_country=$4 isactive=$5 WHERE tax_id = $1",
+          "UPDATE tax  SET tax_name=$2, tax_rate=$3, tax_country=$4 , isactive=$5 WHERE tax_id = $1",
           [tax_id, tax_name, tax_rate, tax_country, isactive]
         )
         .then(async function (result) {
