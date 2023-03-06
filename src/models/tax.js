@@ -58,7 +58,7 @@ const AddNewtax = (request, response) => {
   });
 };
 const EditTaxdata = (data) => {
-  const { tax_id, tax_name, tax_rate, tax_country } = data;
+  const { tax_id, tax_name, tax_rate, tax_country, isactive } = data;
   return new Promise(function (resolve, reject) {
     if (!tax_id) {
       console.log("error:id is missing");
@@ -66,8 +66,8 @@ const EditTaxdata = (data) => {
     } else {
       pool
         .query(
-          "UPDATE tax  SET tax_name=$2, tax_rate=$3, tax_country=$4 WHERE tax_id = $1",
-          [tax_id, tax_name, tax_rate, tax_country]
+          "UPDATE tax  SET tax_name=$2, tax_rate=$3, tax_country=$4 isactive=$5 WHERE tax_id = $1",
+          [tax_id, tax_name, tax_rate, tax_country, isactive]
         )
         .then(async function (result) {
           resolve(result.rows[0]);

@@ -130,28 +130,52 @@ const Editcompanyinfo = (data) => {
       console.log("error:company_id is missing");
       reject("error:company_id is missing");
     } else {
-      pool
-        .query(
-          "UPDATE company_info  SET company_name=$2, image_src=$3, website=$4, phone_no=$5, mobile_no=$6, company_address=$7, terms_condition=$8, fax_no=$9 ,tin_gst_no=$10 WHERE company_id = $1",
-          [
-            company_id,
-            company_name,
-            image_src,
-            website,
-            phone_no,
-            mobile_no,
-            company_address,
-            terms_condition,
-            fax_no,
-            tin_gst_no,
-          ]
-        )
-        .then(async function (result) {
-          resolve(result.rows[0]);
-        })
-        .catch(function (error) {
-          reject(error);
-        });
+      if (image_src) {
+        pool
+          .query(
+            "UPDATE company_info  SET company_name=$2, image_src=$3, website=$4, phone_no=$5, mobile_no=$6, company_address=$7, terms_condition=$8, fax_no=$9 ,tin_gst_no=$10 WHERE company_id = $1",
+            [
+              company_id,
+              company_name,
+              image_src,
+              website,
+              phone_no,
+              mobile_no,
+              company_address,
+              terms_condition,
+              fax_no,
+              tin_gst_no,
+            ]
+          )
+          .then(async function (result) {
+            resolve(result.rows[0]);
+          })
+          .catch(function (error) {
+            reject(error);
+          });
+      } else {
+        pool
+          .query(
+            "UPDATE company_info  SET company_name=$2,  website=$3, phone_no=$4, mobile_no=$5, company_address=$6, terms_condition=$7, fax_no=$8 ,tin_gst_no=$9 WHERE company_id = $1",
+            [
+              company_id,
+              company_name,
+              website,
+              phone_no,
+              mobile_no,
+              company_address,
+              terms_condition,
+              fax_no,
+              tin_gst_no,
+            ]
+          )
+          .then(async function (result) {
+            resolve(result.rows[0]);
+          })
+          .catch(function (error) {
+            reject(error);
+          });
+      }
     }
   });
 };

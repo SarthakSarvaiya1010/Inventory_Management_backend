@@ -124,25 +124,39 @@ const updateproduct = (data) => {
       console.log("error:product_id is missing");
       reject("error:product_id is missing");
     } else {
-      pool
-        .query(
-          "UPDATE products SET product_name=$2 , description=$3 , product_type=$4 , weight=$5 , hsn=$6 , image_src=$7 WHERE product_id = $1",
-          [
-            product_id,
-            product_name,
-            description,
-            product_type,
-            weight,
-            hsn,
-            image_src,
-          ]
-        )
-        .then(async function (result) {
-          resolve(result.rows[0]);
-        })
-        .catch(function (error) {
-          reject(error);
-        });
+      if (image_src) {
+        pool
+          .query(
+            "UPDATE products SET product_name=$2 , description=$3 , product_type=$4 , weight=$5 , hsn=$6 , image_src=$7 WHERE product_id = $1",
+            [
+              product_id,
+              product_name,
+              description,
+              product_type,
+              weight,
+              hsn,
+              image_src,
+            ]
+          )
+          .then(async function (result) {
+            resolve(result.rows[0]);
+          })
+          .catch(function (error) {
+            reject(error);
+          });
+      } else {
+        pool
+          .query(
+            "UPDATE products SET product_name=$2 , description=$3 , product_type=$4 , weight=$5 , hsn=$6  WHERE product_id = $1",
+            [product_id, product_name, description, product_type, weight, hsn]
+          )
+          .then(async function (result) {
+            resolve(result.rows[0]);
+          })
+          .catch(function (error) {
+            reject(error);
+          });
+      }
     }
   });
 };
