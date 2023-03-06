@@ -1,7 +1,8 @@
 .invoice-box {
-  max-width: 100%;
+  max-width: 800px;
   margin: auto;
-  padding: 30px 30px 0 30px;
+  /* padding: 330px 330px 0 330px; */
+  padding: 330px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
   font-size: 16px;
   line-height: 24px;
