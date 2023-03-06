@@ -116,7 +116,10 @@ const AddCompany_info = async function (req, res) {
             success: false,
           });
         } else {
-          let image_src = req.file ? req.file.path : null;
+          const base64Data = req?.file
+            ? Buffer.from(req?.file?.buffer).toString("base64")
+            : null;
+          let image_src = base64Data;
           console.log("image", image_src);
           let {
             company_name,
@@ -186,7 +189,10 @@ const EditCompanyInfo = (req, res) => {
           .isCompanyExists(req.params.company_id)
           .then(async function (result) {
             if (result) {
-              let image_src = req.file ? req.file.path : req.body.image_src;
+              const base64Data = req?.file
+                ? Buffer.from(req?.file?.buffer).toString("base64")
+                : null;
+              let image_src = base64Data;
 
               // if (req.body.company_id && req.body.role_id) {
               if (!Object.keys(error).length) {
