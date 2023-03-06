@@ -20,7 +20,7 @@ const getComapnyList = (data_s) => {
   });
 };
 
-const getDeletedComapny = () => {
+const getDeletedComapny = (data_s) => {
   let delete_flag = "1";
   return new Promise(function (resolve, reject) {
     pool
