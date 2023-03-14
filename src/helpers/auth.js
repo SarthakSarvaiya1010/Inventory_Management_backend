@@ -17,6 +17,7 @@ const AUTH = async (data) => {
             if (
               Date.parse(time) < Date.parse(results?.rows[0]?.session_expire_at)
             ) {
+              console.log(results?.rows[0]?.session_expire_at);
               resolve(results.rows[0]);
             } else {
               pool.query("DELETE  FROM user_session where sessiontoken = $1", [
