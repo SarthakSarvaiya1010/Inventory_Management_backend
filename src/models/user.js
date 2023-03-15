@@ -49,7 +49,7 @@ const getUserbyuser_uuid = (user_uuid) => {
   return new Promise(function (resolve, reject) {
     pool
       .query(
-        "SELECT user_uuid , name ,email  ,  password , mobile_no , image_src , address , role_id , isactive , deleted_flag  FROM users WHERE user_uuid = $1 ",
+        "SELECT user_uuid ,user_id, name ,email  ,  password , mobile_no , image_src , address , role_id , isactive , deleted_flag  FROM users WHERE user_uuid = $1 ",
         [user_uuid]
       )
       .then(function (results) {
@@ -342,6 +342,22 @@ async function UserGetByEmail(email) {
     );
   });
 }
+const getComapnyByuserId = (user_id) => {
+  console.log("user_id", user_id);
+  return new Promise(function (resolve, reject) {
+    pool
+      .query(
+        "SELECT * FROM users_company_map WHERE user_id = $1 ORDER BY company_id ASC",
+        [user_id]
+      )
+      .then(function (results) {
+        resolve(results.rows[0]);
+      })
+      .catch(function (err) {
+        reject(err);
+      });
+  });
+};
 exports.hashPassword = hashPassword;
 module.exports = {
   getUsers,
@@ -358,4 +374,5 @@ module.exports = {
   UserGetByEmail,
   GetcompanyIdByuserId,
   getUserbyuser_uuid,
+  getComapnyByuserId,
 };

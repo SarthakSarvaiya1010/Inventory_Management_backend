@@ -79,7 +79,28 @@ const GetUsersByUser_uuId = (req, res) => {
       if (result) {
         User.getUserbyuser_uuid(user_uuid)
           .then(async function (result) {
-            return res.status(200).json(result);
+            User.getComapnyByuserId(result.user_id)
+              .then(async function (results) {
+                let user = {};
+                user["user_uuid"] = result.user_uuid;
+                user["name"] = result.name;
+                user["email"] = result.email;
+                user["mobile_no"] = result.mobile_no;
+                user["image_src"] = result.image_src;
+                user["address"] = result.address;
+                user["role_id"] = result.role_id;
+                user["isactive"] = result.isactive;
+                user["password"] = result.password;
+                user["deleted_flag"] = result.deleted_flag;
+                user["company_id"] = results.company_id;
+                return res.status(200).json(user);
+              })
+              .catch(function (error) {
+                return res.status(400).json({
+                  message: error,
+                  statusCode: 400,
+                });
+              });
           })
           .catch(function (error) {
             return res.status(400).json({
