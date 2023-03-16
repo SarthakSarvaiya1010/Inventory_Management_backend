@@ -710,6 +710,141 @@ const checkpdf = (req, res) => {
     });
 };
 
+const printInvoice = (req, res) => {
+  let tokanData = req.headers["authorization"];
+
+  auth
+    .AUTH(tokanData)
+    .then(async function (result) {
+      if (result) {
+        customer
+          .getCustomersById(req.body.customer_id)
+          .then(async function (result) {
+            let invoiceDataDummy = [
+              {
+                customer_name: result[0]?.customer_name,
+                bill_no: req?.body?.bill_no,
+                customer_address: result[0]?.address,
+                customer_mobile_no: result[0]?.mobile_no,
+                gst: result[0]?.customer_gst,
+                taxable_amount: req?.body?.taxable_amount,
+                sgst: req?.body?.sgst,
+                cgst: req?.body?.cgst,
+                discount: req?.body?.discount,
+                bill_amount: req?.body?.bill_amount,
+              },
+            ];
+            const contentOri = await readFile(
+              "src/helpers/invoice_original.hbs",
+              "utf8"
+            );
+            const contentDup = await readFile(
+              "src/helpers/invoice_duplicate.hbs",
+              "utf8"
+            );
+            const template = hbs.compile(contentOri + contentDup);
+            // new Date(invoiceDataDummy[0].invoice_date);
+            let date = [
+              {
+                date: req?.body?.invoice_date,
+              },
+            ];
+            const test = [];
+
+            const productdatatyp = req.body.productdata;
+            let count = 0;
+
+            req?.body?.productdata.map((e, index) => {
+              index++;
+              product
+                .getProductById(e.product_id)
+                .then(async function (result) {
+                  test.push({
+                    product_name: result?.product_name,
+                    bill_no: index,
+                    hsn: e?.hsn,
+                    weight: e?.weight,
+                    rate: e?.rate,
+                    amount: e?.amount,
+                  });
+                  count++;
+                  const toWords = [
+                    {
+                      toWords: converter.toWords(req?.body?.bill_amount),
+                    },
+                  ];
+                  if (
+                    count === req?.body?.productdata.length &&
+                    req?.body?.productdata.length <= 10
+                  ) {
+                    [...Array(7 - req.body.productdata.length)].map((e) =>
+                      test.push({})
+                    );
+                  }
+                  const html = template({
+                    invoiceDataDummy,
+                    test,
+                    productdatatyp,
+                    toWords,
+                    date,
+                  });
+                  let pdf_data;
+                  const options = {
+                    base: `${req.protocol}://${req.get("host")}`, // http://localhost:3000
+                    format: "A4",
+                  };
+
+                  if (count === req?.body?.productdata.length) {
+                    pdf.create(html, options).toBuffer((err, buffer) => {
+                      if (err) return console.log(err);
+                      // stream.pipe(fs.createWriteStream(fileName));
+                      // res.attachment("invoice.pdf");
+                      // res.end(buffer);
+                      pdf_data = buffer;
+                      setTimeout(() => {
+                        pdfCall();
+                      }, 500);
+                    });
+                    const pdfCall = () => {
+                      // "./invoice/sample-invoice_data 1676630885015.pdf";
+                      // const pdfData = fs.readFileSync(test_data_1);
+                      const base64Data =
+                        Buffer.from(pdf_data).toString("base64");
+                      res.status(200).json({
+                        status: "success",
+                        statusCode: "200",
+                        invoicePdf: base64Data,
+                        message: "success! Create invoice  suucessfully",
+                      });
+
+                      // res.end(buffer);
+                    };
+                  }
+                })
+                .catch();
+            });
+          })
+          .catch(function (error) {
+            return res.status(400).json({
+              message: error,
+              statusCode: 400,
+            });
+          });
+      } else {
+        return res.status(403).json({
+          message: "Authorization error",
+          statusCode: "403",
+        });
+      }
+    })
+    .catch(function (error) {
+      return res.status(403).json({
+        message: "Authorization error",
+        statusCode: "403",
+      });
+    });
+};
+
 module.exports = {
   InvoiceList,
   InvoiceDeleteList,
@@ -721,4 +856,5 @@ module.exports = {
   DeleteInvoice,
   InvoiceGetPdf,
   checkpdf,
+  printInvoice,
 };

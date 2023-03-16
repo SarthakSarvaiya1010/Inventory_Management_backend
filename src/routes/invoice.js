@@ -116,5 +116,16 @@ router.get(
     res.status(400).send({ error: error.message });
   }
 );
-
+router.post(
+  "/printinvoice/:id",
+  invoiceController.printInvoice,
+  async (req, res, next) => {
+    res.send(req.data);
+  },
+  (error, req, res, next) => {
+    res
+      .status(400)
+      .send({ message: error.message, status: "failed", statusCode: "400" });
+  }
+);
 module.exports = router;
