@@ -117,7 +117,7 @@ router.get(
   }
 );
 router.post(
-  "/printinvoice/:id",
+  "/printinvoice",
   invoiceController.printInvoice,
   async (req, res, next) => {
     res.send(req.data);
