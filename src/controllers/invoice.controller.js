@@ -218,10 +218,6 @@ const AddInvoice = (req, res) => {
         invoice
           .Addinvoice(req.body)
           .then(async function (result) {
-            // return res.status(200).json({
-            //   message: "sucess! invoice add",
-            //   statusCode: "200",
-            // });
             customer
               .getCustomersById(req.body.customer_id)
               .then(async function (result) {
@@ -306,11 +302,6 @@ const AddInvoice = (req, res) => {
                           // res.attachment("invoice.pdf");
                           // res.end(buffer);
                           pdf_data = buffer;
-                          // res.status(400).json({
-                          //   status: "success",
-                          //   statusCode: "200",
-                          //   message: "success! Create invoice  suucessfully",
-                          // });
                           setTimeout(() => {
                             pdfCall();
                           }, 500);
@@ -475,13 +466,7 @@ const UpdateInvoiceData = (req, res) => {
                                 .toStream((err, stream) => {
                                   if (err) return console.log(err);
                                   stream.pipe(fs.createWriteStream(fileName));
-                                  // res.attachment("invoice.pdf");
-                                  // res.end(stream);
-                                  // res.status(400).json({
-                                  //   status: "success",
-                                  //   statusCode: "200",
-                                  //   message: "success! Create invoice  suucessfully",
-                                  // });
+
                                   setTimeout(() => {
                                     pdfCall();
                                   }, 3000);
@@ -513,8 +498,6 @@ const UpdateInvoiceData = (req, res) => {
                     message: error,
                     statusCode: 400,
                   });
-                  // });
-                  // })
                 })
                 .catch(function (error) {
                   return res.status(400).json({
