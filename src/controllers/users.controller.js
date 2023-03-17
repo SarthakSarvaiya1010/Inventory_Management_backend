@@ -401,10 +401,10 @@ const Login = (req, res) => {
                   const company_id = data?.company_id;
                   User.createUserSession({ token, id })
                     .then(function () {
-                      res.cookie(`Cookie token name`, {
-                        secret: "yoursecret",
-                        cookie: { maxAge: 6000 },
-                      });
+                      res.cookie(
+                        `Cookie token name`,
+                        `encrypted cookie string Value`
+                      );
                       res.status(200).send({
                         message: "Login successfully",
                         status: "true",
