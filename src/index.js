@@ -27,7 +27,18 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("public", express.static("public"));
 app.use("/images", imageRouter);
 app.use(cookieParser());
+app.get("/setcookie", (req, res) => {
+  res.cookie(`Cookie token name`, {
+    secret: "yoursecret",
+    cookie: { maxAge: 6000 },
+  });
+  res.send("Cookie have been saved successfully");
+});
 
+app.get("/getcookie", (req, res) => {
+  //show the saved cookies
+  res.send(req.cookies);
+});
 app.listen(port, () => {
   console.log(`App running on port ${port}.`);
 });
