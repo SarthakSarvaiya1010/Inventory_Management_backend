@@ -7,6 +7,8 @@ var formValidation = require("../helpers/formValidation");
 const productlist = async function (req, res) {
   let tokanData = req.headers["authorization"];
   let data_s = filter.filter(req?.query);
+  let session_expire = req.cookies;
+  console.log("req.cookies", req.cookies);
   auth
     .AUTH(tokanData)
     .then(async function (result) {
