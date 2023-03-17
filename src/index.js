@@ -8,6 +8,7 @@ const path = require("path");
 const indexRouter = require("./routes/index");
 const imageRouter = require("./routes/images");
 var cors = require("cors");
+var cookieParser = require("cookie-parser");
 
 app.get("/", (request, response) => {
   response.json({ info: "Node.js, Express, and Postgres API" });
@@ -25,6 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use("public", express.static("public"));
 app.use("/images", imageRouter);
+app.use(cookieParser());
 
 app.listen(port, () => {
   console.log(`App running on port ${port}.`);
