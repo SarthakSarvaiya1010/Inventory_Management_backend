@@ -7,8 +7,6 @@ var formValidation = require("../helpers/formValidation");
 const productlist = async function (req, res) {
   let tokanData = req.headers["authorization"];
   let data_s = filter.filter(req?.query);
-  let session_expire = req.cookies;
-  console.log("req.cookies", req.cookies);
   auth
     .AUTH(tokanData)
     .then(async function (result) {
@@ -17,8 +15,6 @@ const productlist = async function (req, res) {
         products
           .getProducts(data_s)
           .then(async function (result) {
-            // let productdata={}
-            // productdata.[""]
             return res.status(200).json(result);
           })
           .catch(function (error) {
@@ -40,6 +36,16 @@ const productlist = async function (req, res) {
         statusCode: "403",
       });
     });
+};
+const setcookie = async function (req, res) {
+  res.cookie(`Cookie token name`, {
+    secret: "yoursecret",
+    cookie: { maxAge: 8000 },
+  });
+  res.send("Cookie have been saved successfully");
+  (error, req, res, next) => {
+    res.status(400).send({ error: error.message });
+  };
 };
 const productlistData = async function (req, res) {
   let data_s = filter.filter(req?.query);
@@ -314,4 +320,5 @@ module.exports = {
   DeleteProduct,
   GetOneProductByID,
   productlistData,
+  setcookie,
 };
