@@ -217,6 +217,7 @@ const updateUser = (req, res) => {
                     user_id: result.user_id,
                     name: req.body.name,
                     email: req.body.email,
+                    password: req.body.password,
                     mobile_no: req.body.mobile_no,
                     address: req.body.address,
                     role_id: req.body.role_id,
