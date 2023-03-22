@@ -212,6 +212,10 @@ const updateUser = (req, res) => {
           .then(async function (result) {
             if (result) {
               if (result.password === req.body.password) {
+                console.log(
+                  "result.password",
+                  result.password === req.body.password
+                );
                 if (req.body.company_id && req.body.role_id) {
                   User.UpdateuserWithoutPassword({
                     user_id: result.user_id,
@@ -234,7 +238,7 @@ const updateUser = (req, res) => {
                     .catch(function (error) {
                       return res.status(400).json({
                         message: error,
-                        statusCode: 400,
+                        statusCode: 403,
                       });
                     });
                 } else {
