@@ -255,6 +255,22 @@ async function isUserExists(email) {
     );
   });
 }
+async function isUserExistsbypasswordresettoken(passwordresettoken) {
+  console.log("email", passwordresettoken);
+  return new Promise((resolve) => {
+    pool.query(
+      "SELECT * FROM users WHERE passwordresettoken = $1",
+      [passwordresettoken],
+      (error, results) => {
+        if (error) {
+          throw error;
+        }
+
+        return resolve(results.rowCount > 0);
+      }
+    );
+  });
+}
 async function GetcompanyIdByuserId(user_id) {
   return new Promise((resolve) => {
     pool.query(
@@ -383,6 +399,26 @@ const updateUserWithPaswword = (data) => {
     }
   });
 };
+const updateUserWithSetPaswword = (data) => {
+  return new Promise(function (resolve, reject) {
+    if (!data.id) {
+      reject("error: id missing");
+    } else {
+      hashPassword(password).then(function (hash) {
+        pool
+          .query("UPDATE users SET password=$2 WHERE passwordresettoken = $1", [
+            hash,
+          ])
+          .then(function (result) {
+            resolve(result.rows[0]);
+          })
+          .catch(function (err) {
+            reject(err);
+          });
+      });
+    }
+  });
+};
 
 exports.hashPassword = hashPassword;
 module.exports = {
@@ -402,4 +438,6 @@ module.exports = {
   getUserbyuser_uuid,
   getComapnyByuserId,
   updateUserWithPaswword,
+  isUserExistsbypasswordresettoken,
+  updateUserWithSetPaswword,
 };

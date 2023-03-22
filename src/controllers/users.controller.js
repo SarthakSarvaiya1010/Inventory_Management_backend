@@ -503,6 +503,49 @@ const Passwordreset = (req, res) => {
       });
     });
 };
+const PasswordSet = (req, res) => {
+  const { password } = req.body;
+  const { id } = req.params;
+  console.log("id", id, password, "password");
+  User.isUserExistsbypasswordresettoken(id)
+    .then((isExists) => {
+      if (!isExists) {
+        return res.status(400).json({
+          status: "failed",
+          message: "user not exist!",
+          statusCode: "400",
+        });
+      } else {
+        User.getOneUser(isExists.email)
+          .then((user) => {
+            User.updateUserWithSetPaswword(id, password).then(() => {
+              return res.status(200).json({
+                message: "LogOut successfully",
+                statusCode: "200",
+              });
+            });
+          })
+          .catch(function (error) {
+            return res.status(400).json({
+              message: error,
+              statusCode: 400,
+            });
+          })
+          .catch(function (error) {
+            return res.status(400).json({
+              message: error,
+              statusCode: 400,
+            });
+          });
+      }
+    })
+    .catch(function (error) {
+      return res.status(400).json({
+        message: error,
+        statusCode: 400,
+      });
+    });
+};
 
 const LogOut = (req, res) => {
   let tokanData = req.headers["authorization"];
@@ -539,4 +582,5 @@ module.exports = {
   Login,
   LogOut,
   Passwordreset,
+  PasswordSet,
 };
