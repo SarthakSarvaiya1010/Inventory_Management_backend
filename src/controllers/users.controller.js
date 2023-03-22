@@ -4,7 +4,9 @@ var bcrypt = require("bcrypt");
 var User = require("../models/user");
 var auth = require("../helpers/auth");
 var filter = require("../helpers/filter");
+const crypto = require("crypto");
 const formatDate = require("../helpers/helper");
+const Email = require("../helpers/email");
 var d = new Date();
 
 const dformat = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
@@ -366,6 +368,7 @@ const Login = (req, res) => {
   const { email, password } = req.body;
   console.log("email, password", email, password);
   User.isUserExists(email).then((isExists) => {
+    console.log("isExists", isExists);
     if (!isExists) {
       return res.status(400).json({
         status: "failed",
@@ -449,6 +452,58 @@ const Login = (req, res) => {
     );
   });
 };
+
+const Passwordreset = (req, res) => {
+  const { email } = req.body;
+  console.log("email, password", email);
+  User.isUserExists(email)
+    .then((isExists) => {
+      if (!isExists) {
+        return res.status(400).json({
+          status: "failed",
+          message: "user not exist!",
+          statusCode: "400",
+        });
+      } else {
+        User.getOneUser(email)
+          .then((user) => {
+            const resetToken = crypto.randomBytes(32).toString("hex");
+            const passwordResetToken = crypto
+              .createHash("sha256")
+              .update(resetToken)
+              .digest("hex");
+            console.log("isExists", isExists);
+            console.log("passwordResetToken", passwordResetToken);
+            User.updateUserWithPaswword({
+              id: user.user_id,
+              passwordResetToken: passwordResetToken,
+            }).then((update) => {
+              const url = `http://localhost:3000/resetpassword/${resetToken}`;
+              Email.send(user, url).then((send) => {
+                console.log("url", url);
+                console.log("send", send);
+                res.status(200).json({
+                  status: "success",
+                });
+              });
+            });
+          })
+          .catch(function (error) {
+            return res.status(400).json({
+              message: error,
+              statusCode: 400,
+            });
+          });
+      }
+    })
+    .catch(function (error) {
+      return res.status(400).json({
+        message: error,
+        statusCode: 400,
+      });
+    });
+};
+
 const LogOut = (req, res) => {
   let tokanData = req.headers["authorization"];
   if (tokanData) {
@@ -483,4 +538,5 @@ module.exports = {
   GetUsersByUser_uuId,
   Login,
   LogOut,
+  Passwordreset,
 };

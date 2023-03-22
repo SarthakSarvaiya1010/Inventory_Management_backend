@@ -3,6 +3,8 @@ var pass = require("../helpers/helper");
 var bcrypt = require("bcrypt");
 const e = require("express");
 
+const passwordResetAt = new Date(Date.now() + 10 * 60 * 1000);
+
 const getUsers = (data_s) => {
   let deleted_flag = "0";
 
@@ -238,6 +240,7 @@ const deleteuser = (user_id) => {
 };
 
 async function isUserExists(email) {
+  console.log("email", email);
   return new Promise((resolve) => {
     pool.query(
       "SELECT * FROM users WHERE email = $1",
@@ -358,6 +361,29 @@ const getComapnyByuserId = (user_id) => {
       });
   });
 };
+
+const updateUserWithPaswword = (data) => {
+  let ResetToken = data.passwordResetToken;
+  console.log("data", data, "passwordResetAt", passwordResetAt);
+  return new Promise(function (resolve, reject) {
+    if (!data.id) {
+      reject("error: id missing");
+    } else {
+      pool
+        .query(
+          "UPDATE users SET passwordresettoken = $2,passwordresetat = $3 WHERE user_id = $1",
+          [data.id, ResetToken, passwordResetAt]
+        )
+        .then(function (result) {
+          resolve(result.rows[0]);
+        })
+        .catch(function (err) {
+          reject(err);
+        });
+    }
+  });
+};
+
 exports.hashPassword = hashPassword;
 module.exports = {
   getUsers,
@@ -375,4 +401,5 @@ module.exports = {
   GetcompanyIdByuserId,
   getUserbyuser_uuid,
   getComapnyByuserId,
+  updateUserWithPaswword,
 };

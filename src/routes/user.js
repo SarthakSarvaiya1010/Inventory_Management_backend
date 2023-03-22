@@ -88,6 +88,16 @@ router.post(
     res.status(400).send({ error: error.message });
   }
 );
+router.post(
+  "/resetpassword",
+  usercontroller.Passwordreset,
+  (req, res) => {
+    res.send(req.data);
+  },
+  (error, req, res, next) => {
+    res.status(400).send({ error: error.message });
+  }
+);
 
 router.get(
   "/logout",
