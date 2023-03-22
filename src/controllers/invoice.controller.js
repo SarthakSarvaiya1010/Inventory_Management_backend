@@ -777,7 +777,7 @@ const printInvoice = (req, res) => {
                     count === req?.body?.productdata.length &&
                     req?.body?.productdata.length <= 10
                   ) {
-                    [...Array(7 - req.body.productdata.length)].map((e) =>
+                    [...Array(5 - req.body.productdata.length)].map((e) =>
                       test.push({})
                     );
                   }
