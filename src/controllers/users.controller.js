@@ -211,42 +211,75 @@ const updateUser = (req, res) => {
         User.UserGetByUUID(req.params.user_uuid)
           .then(async function (result) {
             if (result) {
-              const base64Data = req?.file
-                ? Buffer.from(req?.file?.buffer).toString("base64")
-                : null;
-              let image_src = base64Data;
-              console.log("image", image_src);
-              if (req.body.company_id && req.body.role_id) {
-                User.Updateuser({
-                  user_id: result.user_id,
-                  name: req.body.name,
-                  email: req.body.email,
-                  password: req.body.password,
-                  mobile_no: req.body.mobile_no,
-                  address: req.body.address,
-                  role_id: req.body.role_id,
-                  company_id: req.body.company_id,
-                  image_src: image_src,
-                })
-                  .then(async function (result) {
-                    return res.status(200).json({
-                      status: "success",
-                      statusCode: "200",
-                      message: "success! user data updated suucessfully",
-                    });
+              if (result.password === req.body.password) {
+                if (req.body.company_id && req.body.role_id) {
+                  User.UpdateuserWithoutPassword({
+                    user_id: result.user_id,
+                    name: req.body.name,
+                    email: req.body.email,
+                    mobile_no: req.body.mobile_no,
+                    address: req.body.address,
+                    role_id: req.body.role_id,
+                    company_id: req.body.company_id,
+                    image_src: image_src,
                   })
-                  .catch(function (error) {
-                    return res.status(400).json({
-                      message: error,
-                      statusCode: 400,
+                    .then(async function (result) {
+                      return res.status(200).json({
+                        status: "success",
+                        statusCode: "200",
+                        message: "success! user data updated suucessfully",
+                      });
+                    })
+                    .catch(function (error) {
+                      return res.status(400).json({
+                        message: error,
+                        statusCode: 400,
+                      });
                     });
+                } else {
+                  return res.status(200).json({
+                    message:
+                      "Required, please select company and select your role.",
+                    statusCode: "400",
                   });
+                }
               } else {
-                return res.status(200).json({
-                  message:
-                    "Required, please select company and select your role.",
-                  statusCode: "400",
-                });
+                const base64Data = req?.file
+                  ? Buffer.from(req?.file?.buffer).toString("base64")
+                  : null;
+                let image_src = base64Data;
+                if (req.body.company_id && req.body.role_id) {
+                  User.Updateuser({
+                    user_id: result.user_id,
+                    name: req.body.name,
+                    email: req.body.email,
+                    password: req.body.password,
+                    mobile_no: req.body.mobile_no,
+                    address: req.body.address,
+                    role_id: req.body.role_id,
+                    company_id: req.body.company_id,
+                    image_src: image_src,
+                  })
+                    .then(async function (result) {
+                      return res.status(200).json({
+                        status: "success",
+                        statusCode: "200",
+                        message: "success! user data updated suucessfully",
+                      });
+                    })
+                    .catch(function (error) {
+                      return res.status(400).json({
+                        message: error,
+                        statusCode: 400,
+                      });
+                    });
+                } else {
+                  return res.status(200).json({
+                    message:
+                      "Required, please select company and select your role.",
+                    statusCode: "400",
+                  });
+                }
               }
             } else {
               return res.status(200).json({
@@ -455,7 +488,6 @@ const Login = (req, res) => {
 
 const Passwordreset = (req, res) => {
   const { email } = req.body;
-  console.log("email, password", email);
   User.isUserExists(email)
     .then((isExists) => {
       if (!isExists) {
@@ -514,10 +546,6 @@ const PasswordSet = (req, res) => {
         });
       } else {
         User.getOneUserBypasswordresettoken(id).then((data) => {
-          console.log(
-            "Date.parse(data.passwordresetat) > Date.parse(time)",
-            Date.parse(data.passwordresetat) > Date.parse(time)
-          );
           if (Date.parse(data.passwordresetat) > Date.parse(time)) {
             User.updateUserWithSetPaswword(id, password)
               .then(() => {

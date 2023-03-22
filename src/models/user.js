@@ -191,6 +191,47 @@ const Updateuser = (data) => {
     });
   }
 };
+const UpdateuserWithoutPassword = (data) => {
+  const {
+    user_id,
+    name,
+    email,
+    password,
+    mobile_no,
+    address,
+    role_id,
+    company_id,
+    image_src,
+  } = data;
+  if (company_id) {
+    return new Promise(function (resolve, reject) {
+      if (!user_id) {
+        console.log("error: id missing");
+        reject("error: id missing");
+      } else {
+        hashPassword(password)
+          .then(function (hash) {
+            pool.query(
+              "UPDATE users SET name = $1, email = $2 ,  image_src = $3 ,  mobile_no = $4 , address = $5 , role_id = $6  WHERE user_id = $7",
+              [name, email, image_src, mobile_no, address, role_id, user_id]
+            );
+          })
+          .then(() => {
+            return pool.query(
+              "UPDATE public.users_company_map SET company_id=$2 WHERE user_id =$1",
+              [user_id, company_id]
+            );
+          })
+          .then(function (result) {
+            resolve(result.rows[0]);
+          })
+          .catch(function (err) {
+            reject(err);
+          });
+      }
+    });
+  }
+};
 
 const PermentDeleteuser = (user_id) => {
   return new Promise(function (resolve, reject) {
@@ -453,4 +494,5 @@ module.exports = {
   isUserExistsbypasswordresettoken,
   updateUserWithSetPaswword,
   getOneUserBypasswordresettoken,
+  UpdateuserWithoutPassword,
 };
