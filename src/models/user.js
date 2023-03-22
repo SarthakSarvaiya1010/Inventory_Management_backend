@@ -256,7 +256,6 @@ async function isUserExists(email) {
   });
 }
 async function isUserExistsbypasswordresettoken(passwordresettoken) {
-  console.log("email", passwordresettoken);
   return new Promise((resolve) => {
     pool.query(
       "SELECT * FROM users WHERE passwordresettoken = $1",
@@ -380,7 +379,6 @@ const getComapnyByuserId = (user_id) => {
 
 const updateUserWithPaswword = (data) => {
   let ResetToken = data.passwordResetToken;
-  console.log("data", data, "passwordResetAt", passwordResetAt);
   return new Promise(function (resolve, reject) {
     if (!data.id) {
       reject("error: id missing");
@@ -399,14 +397,15 @@ const updateUserWithPaswword = (data) => {
     }
   });
 };
-const updateUserWithSetPaswword = (data) => {
+const updateUserWithSetPaswword = (data, password) => {
   return new Promise(function (resolve, reject) {
-    if (!data.id) {
+    if (!data) {
       reject("error: id missing");
     } else {
       hashPassword(password).then(function (hash) {
         pool
           .query("UPDATE users SET password=$2 WHERE passwordresettoken = $1", [
+            data,
             hash,
           ])
           .then(function (result) {
