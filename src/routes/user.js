@@ -99,7 +99,7 @@ router.post(
   }
 );
 router.post(
-  "/setpassword",
+  "/setpassword/:id",
   usercontroller.PasswordSet,
   (req, res) => {
     res.send(req.data);
