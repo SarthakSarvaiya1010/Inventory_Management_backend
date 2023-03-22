@@ -472,13 +472,11 @@ const Passwordreset = (req, res) => {
               .createHash("sha256")
               .update(resetToken)
               .digest("hex");
-            console.log("isExists", isExists);
-            console.log("passwordResetToken", passwordResetToken);
             User.updateUserWithPaswword({
               id: user.user_id,
               passwordResetToken: passwordResetToken,
             }).then((update) => {
-              const url = `http://localhost:3000/resetpassword/${resetToken}`;
+              const url = `http://localhost:3000/resetpassword/${passwordResetToken}`;
               Email.send(user, url).then((send) => {
                 console.log("url", url);
                 console.log("send", send);
@@ -515,19 +513,27 @@ const PasswordSet = (req, res) => {
           statusCode: "400",
         });
       } else {
-        User.updateUserWithSetPaswword(id, password)
-          .then(() => {
-            return res.status(200).json({
-              message: "Password Update successfully",
-              statusCode: "200",
-            });
-          })
-          .catch(function (error) {
-            return res.status(400).json({
-              message: error,
-              statusCode: 400,
-            });
-          });
+        User.getOneUserBypasswordresettoken(id).then((data) => {
+          console.log(
+            "Date.parse(data.passwordresetat) > Date.parse(time)",
+            Date.parse(data.passwordresetat) > Date.parse(time)
+          );
+          if (Date.parse(data.passwordresetat) > Date.parse(time)) {
+            User.updateUserWithSetPaswword(id, password)
+              .then(() => {
+                return res.status(200).json({
+                  message: "Password Update successfully",
+                  statusCode: "200",
+                });
+              })
+              .catch(function (error) {
+                return res.status(400).json({
+                  message: error,
+                  statusCode: 400,
+                });
+              });
+          }
+        });
       }
     })
     .catch(function (error) {

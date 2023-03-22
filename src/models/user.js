@@ -240,7 +240,6 @@ const deleteuser = (user_id) => {
 };
 
 async function isUserExists(email) {
-  console.log("email", email);
   return new Promise((resolve) => {
     pool.query(
       "SELECT * FROM users WHERE email = $1",
@@ -290,6 +289,20 @@ async function getOneUser(email) {
     pool.query(
       "SELECT * FROM users WHERE email = $1 ",
       [email],
+      (error, results) => {
+        if (error) {
+          throw error;
+        }
+        return resolve(results.rows[0]);
+      }
+    );
+  });
+}
+async function getOneUserBypasswordresettoken(passwordresettoken) {
+  return new Promise((resolve) => {
+    pool.query(
+      "SELECT * FROM users WHERE passwordresettoken = $1 ",
+      [passwordresettoken],
       (error, results) => {
         if (error) {
           throw error;
@@ -439,4 +452,5 @@ module.exports = {
   updateUserWithPaswword,
   isUserExistsbypasswordresettoken,
   updateUserWithSetPaswword,
+  getOneUserBypasswordresettoken,
 };
