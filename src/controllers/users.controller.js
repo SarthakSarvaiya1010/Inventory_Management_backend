@@ -490,6 +490,68 @@ const Login = (req, res) => {
     );
   });
 };
+const QuickLogin = (req, res) => {
+  const { email, password } = req.body;
+  console.log("email, password", email, password);
+  User.isUserExists(email).then((isExists) => {
+    console.log("isExists", isExists);
+    if (!isExists) {
+      return res.status(400).json({
+        status: "failed",
+        message: "user not exist!",
+        statusCode: "400",
+      });
+    }
+    User.getOneUser(email).then((user) => {
+      var token = jwt.sign(
+        {
+          id: user.user_id,
+        },
+        process.env.API_SECRET,
+        {
+          expiresIn: 86400,
+        }
+      );
+      const id = user.user_id;
+      const name = user.name;
+      const email = user.email;
+      const role_id = user.role_id;
+      User.GetcompanyIdByuserId(id)
+        .then((data) => {
+          const company_id = data?.company_id;
+          User.createUserSession({ token, id })
+            .then(function () {
+              res.cookie(`Cookie token name`, {
+                secret: "yoursecret",
+                cookie: { maxAge: 6000 },
+              });
+              res.status(200).send({
+                message: "Login successfully",
+                status: "true",
+                statusCode: "200",
+                name: name,
+                email: email,
+                role_id: role_id,
+                accessToken: token,
+                company_id: company_id,
+              });
+            })
+            .catch(function (error) {
+              return res.status(400).json({
+                message: error,
+                statusCode: 400,
+              });
+            });
+        })
+        .catch(function (error) {
+          return res.status(400).json({
+            message: error,
+            statusCode: 400,
+          });
+        });
+    });
+  });
+};
 
 const Passwordreset = (req, res) => {
   const { email } = req.body;
@@ -613,4 +675,5 @@ module.exports = {
   LogOut,
   Passwordreset,
   PasswordSet,
+  QuickLogin,
 };

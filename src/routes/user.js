@@ -119,4 +119,14 @@ router.get(
     res.status(400).send({ error: error.message });
   }
 );
+router.post(
+  "/quicklogin",
+  usercontroller.QuickLogin,
+  (req, res) => {
+    res.send(req.data);
+  },
+  (error, req, res, next) => {
+    res.status(400).send({ error: error.message });
+  }
+);
 module.exports = router;
