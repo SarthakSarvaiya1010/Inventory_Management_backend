@@ -100,17 +100,18 @@ const Addinvoice = (req, res) => {
   } = req;
   console.log("done", invoice_date);
   let NewDate = invoice_date.split("-", 3);
+  let dateInvoice = `${NewDate[1]}-${NewDate[0]}-${NewDate[2]}`;
+  console.log("dateInvoice", dateInvoice);
   let isactive = "1";
   let delete_flag = "0";
   let company_id = 1;
-  console.log("invoice_date", invoice_date, "NewDate", NewDate);
   return new Promise(function (resolve, reject) {
     pool
       .query(
         "INSERT INTO public.invoice(bill_no, invoice_date, customer_id, taxable_amount, sgst, cgst, discount ,bill_amount, isactive , delete_flag,company_id ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9 , $10, $11);",
         [
           bill_no,
-          invoice_date,
+          dateInvoice,
           customer_id,
           taxable_amount,
           sgst,
