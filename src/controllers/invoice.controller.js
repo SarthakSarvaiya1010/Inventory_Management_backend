@@ -210,11 +210,12 @@ const GetInvoicePage = (req, res) => {
 
 const AddInvoice = (req, res) => {
   let tokanData = req.headers["authorization"];
-
+  console.log("tokanData", tokanData);
   auth
     .AUTH(tokanData)
     .then(async function (result) {
       if (result) {
+        console.log("result", result);
         invoice
           .Addinvoice(req.body)
           .then(async function (result) {

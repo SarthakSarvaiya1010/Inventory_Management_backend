@@ -98,7 +98,8 @@ const Addinvoice = (req, res) => {
     bill_amount,
     productdata,
   } = req;
-  let NewDate = formatDate.formatDate(invoice_date);
+  console.log("done", invoice_date);
+  let NewDate = invoice_date.split("-", 3);
   let isactive = "1";
   let delete_flag = "0";
   let company_id = 1;
@@ -109,7 +110,7 @@ const Addinvoice = (req, res) => {
         "INSERT INTO public.invoice(bill_no, invoice_date, customer_id, taxable_amount, sgst, cgst, discount ,bill_amount, isactive , delete_flag,company_id ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9 , $10, $11);",
         [
           bill_no,
-          NewDate,
+          invoice_date,
           customer_id,
           taxable_amount,
           sgst,
