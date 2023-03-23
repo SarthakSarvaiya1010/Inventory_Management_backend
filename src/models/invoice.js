@@ -1,4 +1,5 @@
 const pool = require("../../config");
+const formatDate = require("../helpers/helper");
 const getInvoiceList = (data_s) => {
   let delete_flag = "0";
   return new Promise(function (resolve, reject) {
@@ -97,17 +98,18 @@ const Addinvoice = (req, res) => {
     bill_amount,
     productdata,
   } = req;
+  let NewDate = formatDate.formatDate(invoice_date);
   let isactive = "1";
   let delete_flag = "0";
   let company_id = 1;
-  console.log("invoice_date", invoice_date);
+  console.log("invoice_date", invoice_date, "NewDate", NewDate);
   return new Promise(function (resolve, reject) {
     pool
       .query(
         "INSERT INTO public.invoice(bill_no, invoice_date, customer_id, taxable_amount, sgst, cgst, discount ,bill_amount, isactive , delete_flag,company_id ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9 , $10, $11);",
         [
           bill_no,
-          invoice_date,
+          NewDate,
           customer_id,
           taxable_amount,
           sgst,
