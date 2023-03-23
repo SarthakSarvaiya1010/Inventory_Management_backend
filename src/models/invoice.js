@@ -100,7 +100,7 @@ const Addinvoice = (req, res) => {
   let isactive = "1";
   let delete_flag = "0";
   let company_id = 1;
-
+  console.log("invoice_date", invoice_date);
   return new Promise(function (resolve, reject) {
     pool
       .query(
