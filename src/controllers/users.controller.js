@@ -624,7 +624,8 @@ const PasswordresetTimeCheck = (req, res) => {
             });
           } else {
             res.status(200).json({
-              status: "success",
+              status: "Link Was is expire",
+              statusCode: "400",
             });
           }
         });
