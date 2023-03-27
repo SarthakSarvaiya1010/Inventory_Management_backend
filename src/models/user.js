@@ -3,7 +3,7 @@ var pass = require("../helpers/helper");
 var bcrypt = require("bcrypt");
 const e = require("express");
 
-const passwordResetAt = new Date(Date.now() + 10 * 60 * 1000);
+const passwordResetAt = new Date(Date.now());
 
 const getUsers = (data_s) => {
   let deleted_flag = "0";

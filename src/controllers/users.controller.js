@@ -7,6 +7,7 @@ var filter = require("../helpers/filter");
 const crypto = require("crypto");
 const formatDate = require("../helpers/helper");
 const Email = require("../helpers/email");
+let moment = require("moment");
 var d = new Date();
 
 const dformat = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
@@ -600,6 +601,42 @@ const Passwordreset = (req, res) => {
       });
     });
 };
+const PasswordresetTimeCheck = (req, res) => {
+  const { passwordresettoken } = req.params;
+
+  User.isUserExistsbypasswordresettoken(passwordresettoken)
+    .then((isExists) => {
+      if (!isExists) {
+        return res.status(400).json({
+          status: "failed",
+          message: "user not exist!",
+          statusCode: "400",
+        });
+      } else {
+        User.getOneUserBypasswordresettoken(passwordresettoken).then((user) => {
+          let date1 = moment();
+          let date2 = moment(user.passwordresetat);
+          let diffDate = date2.diff(date1, "minutes");
+          if (diffDate <= 10) {
+            res.status(200).json({
+              status: "success",
+              statusCode: "200",
+            });
+          } else {
+            res.status(200).json({
+              status: "success",
+            });
+          }
+        });
+      }
+    })
+    .catch(function (error) {
+      return res.status(400).json({
+        message: error,
+        statusCode: 400,
+      });
+    });
+};
 const PasswordSet = (req, res) => {
   const { password } = req.body;
   const { id } = req.params;
@@ -676,4 +713,5 @@ module.exports = {
   Passwordreset,
   PasswordSet,
   QuickLogin,
+  PasswordresetTimeCheck,
 };
