@@ -576,7 +576,7 @@ const Passwordreset = (req, res) => {
               id: user.user_id,
               passwordResetToken: passwordResetToken,
             }).then((update) => {
-              const url = `http://localhost:3000/resetpassword/${passwordResetToken}`;
+              const url = `https://inventory-management-kappa.vercel.app/resetpassword/${passwordResetToken}`;
               Email.send(user, url).then((send) => {
                 console.log("url", url);
                 console.log("send", send);
@@ -616,8 +616,8 @@ const PasswordresetTimeCheck = (req, res) => {
         User.getOneUserBypasswordresettoken(passwordresettoken).then((user) => {
           let date1 = moment();
           let date2 = moment(user.passwordresetat);
-          let diffDate = date2.diff(date1, "minutes");
-          if (diffDate <= 10) {
+          let diffDate = date1.diff(date2, "minutes");
+          if (diffDate < 10) {
             res.status(200).json({
               status: "success",
               statusCode: "200",
@@ -651,7 +651,10 @@ const PasswordSet = (req, res) => {
         });
       } else {
         User.getOneUserBypasswordresettoken(id).then((data) => {
-          if (Date.parse(data.passwordresetat) > Date.parse(time)) {
+          let date1 = moment();
+          let date2 = moment(data.passwordresetat);
+          let diffDate = date1.diff(date2, "minutes");
+          if (diffDate <= 10) {
             User.updateUserWithSetPaswword(id, password)
               .then(() => {
                 return res.status(200).json({
