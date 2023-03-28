@@ -42,14 +42,15 @@ const getDeletedProducts = (data_s) => {
 };
 
 const AddProduct = (request, image_src) => {
-  const { product_name, hsn, weight, description, product_type } = request;
+  const { product_name, hsn, weight, description, product_type, unit } =
+    request;
   const isactive = "1";
   const delete_flag = "0";
   const company_id = 1;
   return new Promise(function (resolve, reject) {
     pool
       .query(
-        "INSERT INTO products ( product_name, hsn, weight,description, product_type, isactive, delete_flag ,company_id , image_src ) VALUES ($1,$2, $3,$4,$5,$6,$7,$8 ,$9)",
+        "INSERT INTO products ( product_name, hsn, weight,description, product_type, isactive, delete_flag ,company_id , image_src ,unit ) VALUES ($1,$2, $3,$4,$5,$6,$7,$8 ,$9 ,$10)",
         [
           product_name,
           hsn,
@@ -60,6 +61,7 @@ const AddProduct = (request, image_src) => {
           delete_flag,
           company_id,
           image_src,
+          unit,
         ]
       )
       .then(function (result) {
