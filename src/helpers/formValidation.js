@@ -119,3 +119,33 @@ exports.CompanyformValidation = (data) => {
   console.log(error);
   return error;
 };
+exports.UserformValidation = (data) => {
+  let error = {};
+
+  let { name, role_id, address, email, password, mobile_no, company_id } = data;
+  if (!name) {
+    error = "Name is missing ";
+  } else if (!role_id) {
+    error = "Role is missing";
+  } else if (!mobile_no) {
+    error = "mobile number is missing ";
+  } else if (
+    !/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(
+      parseInt(mobile_no)
+    )
+  ) {
+    error = "mobile number is invalid";
+  } else if (!address) {
+    error = "Address is missing";
+  } else if (!email) {
+    error = "Email id is missing";
+  } else if (!/\S+@\S+\.\S+/.test(email)) {
+    error = "Email address is invalid";
+  } else if (!password) {
+    error = "Password is missing";
+  } else if (!company_id) {
+    error = "Company name is missing";
+  }
+  console.log(error);
+  return error;
+};

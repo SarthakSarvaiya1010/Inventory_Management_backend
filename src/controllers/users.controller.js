@@ -8,6 +8,8 @@ const crypto = require("crypto");
 const formatDate = require("../helpers/helper");
 const Email = require("../helpers/email");
 let moment = require("moment");
+var formValidation = require("../helpers/formValidation");
+
 var d = new Date();
 
 const dformat = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
@@ -205,102 +207,110 @@ const createUser = async function (req, res) {
 };
 const updateUser = (req, res) => {
   let tokanData = req.headers["authorization"];
+  let error = formValidation.UserformValidation(req.body);
   auth
     .AUTH(tokanData)
     .then(async function (result) {
       if (result) {
-        User.UserGetByUUID(req?.params?.user_uuid)
-          .then(async function (result) {
-            if (result) {
-              const base64Data = req?.file
-                ? Buffer.from(req?.file?.buffer).toString("base64")
-                : null;
-              let image_src = base64Data;
-
-              if (result.password === req.body.password) {
-                if (req.body.company_id && req.body.role_id) {
-                  User.UpdateuserWithoutPassword({
-                    user_id: result.user_id,
-                    name: req.body.name,
-                    email: req.body.email,
-                    password: req.body.password,
-                    mobile_no: req.body.mobile_no,
-                    address: req.body.address,
-                    role_id: req.body.role_id,
-                    company_id: req.body.company_id,
-                    image_src: image_src ? image_src : null,
-                  })
-                    .then(async function (result) {
-                      return res.status(200).json({
-                        status: "success",
-                        statusCode: "200",
-                        message: "success! user data updated suucessfully",
-                      });
-                    })
-                    .catch(function (error) {
-                      return res.status(400).json({
-                        message: error,
-                        statusCode: "400",
-                      });
-                    });
-                } else {
-                  return res.status(400).json({
-                    message:
-                      "Required, please select company and select your role.",
-                    statusCode: "400",
-                  });
-                }
-              } else {
+        if (!Object.keys(error).length) {
+          User.UserGetByUUID(req?.params?.user_uuid)
+            .then(async function (result) {
+              if (result) {
                 const base64Data = req?.file
                   ? Buffer.from(req?.file?.buffer).toString("base64")
                   : null;
                 let image_src = base64Data;
-                if (req.body.company_id && req.body.role_id) {
-                  User.Updateuser({
-                    user_id: result.user_id,
-                    name: req.body.name,
-                    email: req.body.email,
-                    password: req.body.password,
-                    mobile_no: req.body.mobile_no,
-                    address: req.body.address,
-                    role_id: req.body.role_id,
-                    company_id: req.body.company_id,
-                    image_src: image_src,
-                  })
-                    .then(async function (result) {
-                      return res.status(200).json({
-                        status: "success",
-                        statusCode: "200",
-                        message: "success! user data updated suucessfully",
-                      });
+
+                if (result.password === req.body.password) {
+                  if (req.body.company_id && req.body.role_id) {
+                    User.UpdateuserWithoutPassword({
+                      user_id: result.user_id,
+                      name: req.body.name,
+                      email: req.body.email,
+                      password: req.body.password,
+                      mobile_no: req.body.mobile_no,
+                      address: req.body.address,
+                      role_id: req.body.role_id,
+                      company_id: req.body.company_id,
+                      image_src: image_src ? image_src : null,
                     })
-                    .catch(function (error) {
-                      return res.status(400).json({
-                        message: error,
-                        statusCode: "489",
+                      .then(async function (result) {
+                        return res.status(200).json({
+                          status: "success",
+                          statusCode: "200",
+                          message: "success! user data updated suucessfully",
+                        });
+                      })
+                      .catch(function (error) {
+                        return res.status(400).json({
+                          message: error,
+                          statusCode: "400",
+                        });
                       });
+                  } else {
+                    return res.status(400).json({
+                      message:
+                        "Required, please select company and select your role.",
+                      statusCode: "400",
                     });
+                  }
                 } else {
-                  return res.status(400).json({
-                    message:
-                      "Required, please select company and select your role.",
-                    statusCode: "400",
-                  });
+                  const base64Data = req?.file
+                    ? Buffer.from(req?.file?.buffer).toString("base64")
+                    : null;
+                  let image_src = base64Data;
+                  if (req.body.company_id && req.body.role_id) {
+                    User.Updateuser({
+                      user_id: result.user_id,
+                      name: req.body.name,
+                      email: req.body.email,
+                      password: req.body.password,
+                      mobile_no: req.body.mobile_no,
+                      address: req.body.address,
+                      role_id: req.body.role_id,
+                      company_id: req.body.company_id,
+                      image_src: image_src,
+                    })
+                      .then(async function (result) {
+                        return res.status(200).json({
+                          status: "success",
+                          statusCode: "200",
+                          message: "success! user data updated suucessfully",
+                        });
+                      })
+                      .catch(function (error) {
+                        return res.status(400).json({
+                          message: error,
+                          statusCode: "489",
+                        });
+                      });
+                  } else {
+                    return res.status(400).json({
+                      message:
+                        "Required, please select company and select your role.",
+                      statusCode: "400",
+                    });
+                  }
                 }
+              } else {
+                return res.status(400).json({
+                  message: "user not exist",
+                  statusCode: "400",
+                });
               }
-            } else {
+            })
+            .catch(function (error) {
               return res.status(400).json({
-                message: "user not exist",
+                message: error,
                 statusCode: "400",
               });
-            }
-          })
-          .catch(function (error) {
-            return res.status(400).json({
-              message: error,
-              statusCode: "400",
             });
+        } else {
+          return res.status(400).json({
+            message: error,
+            statusCode: "400",
           });
+        }
       } else {
         return res.status(403).json({
           message: "Authorization error",
@@ -579,8 +589,6 @@ const Passwordreset = (req, res) => {
             }).then((update) => {
               const url = `https://inventory-management-kappa.vercel.app/resetpassword/${passwordResetToken}`;
               Email.send(user, url).then((send) => {
-                console.log("url", url);
-                console.log("send", send);
                 res.status(200).json({
                   status: "success",
                 });
