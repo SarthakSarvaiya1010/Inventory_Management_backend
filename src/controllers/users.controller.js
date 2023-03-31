@@ -209,14 +209,15 @@ const updateUser = (req, res) => {
     .AUTH(tokanData)
     .then(async function (result) {
       if (result) {
-        User.UserGetByUUID(req.params.user_uuid)
+        User.UserGetByUUID(req?.params?.user_uuid)
           .then(async function (result) {
             if (result) {
+              const base64Data = req?.file
+                ? Buffer.from(req?.file?.buffer).toString("base64")
+                : null;
+              let image_src = base64Data;
+
               if (result.password === req.body.password) {
-                console.log(
-                  "result.password",
-                  result.password === req.body.password
-                );
                 if (req.body.company_id && req.body.role_id) {
                   User.UpdateuserWithoutPassword({
                     user_id: result.user_id,
@@ -227,7 +228,7 @@ const updateUser = (req, res) => {
                     address: req.body.address,
                     role_id: req.body.role_id,
                     company_id: req.body.company_id,
-                    image_src: image_src,
+                    image_src: image_src ? image_src : null,
                   })
                     .then(async function (result) {
                       return res.status(200).json({
@@ -239,11 +240,11 @@ const updateUser = (req, res) => {
                     .catch(function (error) {
                       return res.status(400).json({
                         message: error,
-                        statusCode: 403,
+                        statusCode: "400",
                       });
                     });
                 } else {
-                  return res.status(200).json({
+                  return res.status(400).json({
                     message:
                       "Required, please select company and select your role.",
                     statusCode: "400",
@@ -276,11 +277,11 @@ const updateUser = (req, res) => {
                     .catch(function (error) {
                       return res.status(400).json({
                         message: error,
-                        statusCode: 400,
+                        statusCode: "489",
                       });
                     });
                 } else {
-                  return res.status(200).json({
+                  return res.status(400).json({
                     message:
                       "Required, please select company and select your role.",
                     statusCode: "400",
@@ -288,7 +289,7 @@ const updateUser = (req, res) => {
                 }
               }
             } else {
-              return res.status(200).json({
+              return res.status(400).json({
                 message: "user not exist",
                 statusCode: "400",
               });
@@ -297,7 +298,7 @@ const updateUser = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -623,7 +624,7 @@ const PasswordresetTimeCheck = (req, res) => {
               statusCode: "200",
             });
           } else {
-            res.status(200).json({
+            res.status(400).json({
               status: "Link Was is expire",
               statusCode: "400",
             });
@@ -654,7 +655,7 @@ const PasswordSet = (req, res) => {
           let date1 = moment();
           let date2 = moment(data.passwordresetat);
           let diffDate = date1.diff(date2, "minutes");
-          if (diffDate <= 10) {
+          if (diffDate < 10) {
             User.updateUserWithSetPaswword(id, password)
               .then(() => {
                 return res.status(200).json({
@@ -665,9 +666,14 @@ const PasswordSet = (req, res) => {
               .catch(function (error) {
                 return res.status(400).json({
                   message: error,
-                  statusCode: 400,
+                  statusCode: "400",
                 });
               });
+          } else {
+            res.status(400).json({
+              status: "Link Was is expire",
+              statusCode: "400",
+            });
           }
         });
       }
@@ -675,7 +681,7 @@ const PasswordSet = (req, res) => {
     .catch(function (error) {
       return res.status(400).json({
         message: error,
-        statusCode: 400,
+        statusCode: "400",
       });
     });
 };

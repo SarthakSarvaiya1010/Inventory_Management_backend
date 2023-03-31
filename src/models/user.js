@@ -3,7 +3,7 @@ var pass = require("../helpers/helper");
 var bcrypt = require("bcrypt");
 const e = require("express");
 
-const passwordResetAt = new Date();
+const passwordResetAt = new Date(Date.now());
 
 const getUsers = (data_s) => {
   let deleted_flag = "0";
@@ -387,18 +387,22 @@ function hashPassword(password) {
   });
 }
 async function UserGetByUUID(user_uuid) {
-  return new Promise((resolve) => {
-    pool.query(
-      "SELECT * FROM users WHERE user_uuid = $1",
-      [user_uuid],
-      (error, results) => {
-        if (error) {
-          throw error;
+  if (!user_uuid) {
+    reject("error: id missing");
+  } else {
+    return new Promise((resolve) => {
+      pool.query(
+        "SELECT * FROM users WHERE user_uuid = $1",
+        [user_uuid],
+        (error, results) => {
+          if (error) {
+            throw error;
+          }
+          return resolve(results.rows[0]);
         }
-        return resolve(results.rows[0]);
-      }
-    );
-  });
+      );
+    });
+  }
 }
 async function UserGetByEmail(email) {
   return new Promise((resolve) => {
