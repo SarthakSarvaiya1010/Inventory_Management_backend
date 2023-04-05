@@ -12,6 +12,16 @@ router.get(
     res.status(400).send({ error: error.message });
   }
 );
+router.get(
+  "/purchasebilldeletelist",
+  purchasebillcontroller.PurchaseBillDeleteList,
+  (req, res) => {
+    res.send(req.data);
+  },
+  (error, req, res, next) => {
+    res.status(400).send({ error: error.message });
+  }
+);
 router.post(
   "/addpurchasebill",
   purchasebillcontroller.AddPurchasebill,
