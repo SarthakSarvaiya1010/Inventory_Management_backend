@@ -626,6 +626,7 @@ const PasswordresetTimeCheck = (req, res) => {
           let date1 = moment();
           let date2 = moment(user.passwordresetat);
           let diffDate = date1.diff(date2, "minutes");
+          console.log("diffDate", diffDate);
           if (diffDate < 10) {
             res.status(200).json({
               status: "success",
@@ -663,6 +664,7 @@ const PasswordSet = (req, res) => {
           let date1 = moment();
           let date2 = moment(data.passwordresetat);
           let diffDate = date1.diff(date2, "minutes");
+          console.log("diffDate", diffDate);
           if (diffDate < 10) {
             User.updateUserWithSetPaswword(id, password)
               .then(() => {

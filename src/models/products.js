@@ -163,15 +163,16 @@ const updateproduct = (data) => {
   });
 };
 async function getProductById(product_id) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     pool.query(
       "SELECT * FROM products WHERE product_id = $1 ",
       [product_id],
       (error, results) => {
         if (error) {
-          throw error;
+          return reject(error);
+        } else {
+          return resolve(results.rows[0]);
         }
-        return resolve(results.rows[0]);
       }
     );
   });

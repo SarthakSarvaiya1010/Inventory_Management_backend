@@ -4,6 +4,7 @@ const products = require("./products");
 const customer = require("./customer");
 const companylist = require("./companylist");
 const tax = require("./tax");
+const purchasebill = require("./purchasebill");
 const invoice = require("./invoice");
 const router = express.Router();
 
@@ -19,4 +20,5 @@ router.use(customer);
 router.use(companylist);
 router.use(tax);
 router.use(invoice);
+router.use(purchasebill);
 module.exports = router;
