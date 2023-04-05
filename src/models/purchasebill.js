@@ -240,16 +240,17 @@ const UpdatePurchaseInfo = (req, purchase_id, res) => {
             purchase_id,
           ]
         )
-        .then(() =>
-          pool.query("DELETE FROM invoice_products WHERE  purchase_id = $1", [
-            purchase_id,
-          ])
-        )
+        .then(() => {
+          pool.query(
+            "DELETE FROM purchasebill_products WHERE  purchase_id = $1",
+            [purchase_id]
+          );
+        })
         .then((ress) => {
           req.productdata.map(async (data) => {
             try {
               const result = await pool.query(
-                "INSERT INTO invoice_products(purchase_id, bill_no, company_id,  product_id, hsn, weight, rate, amount) values($1,$2,$3,$4,$5,$6,$7,$8) returning * ",
+                "INSERT INTO purchasebill_products(purchase_id, bill_no, company_id,  product_id, hsn, weight, rate, amount) values($1,$2,$3,$4,$5,$6,$7,$8) returning * ",
                 [
                   purchase_id,
                   bill_no,
