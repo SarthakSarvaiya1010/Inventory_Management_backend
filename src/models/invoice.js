@@ -131,11 +131,10 @@ const Addinvoice = (req, res) => {
       )
       .then((ress) => {
         const invoice_id = ress?.rows[0]?.invoice_id;
-
         req?.productdata?.map((data) => {
           pool
             .query(
-              "INSERT INTO invoice_products(product_id,hsn,weight ,rate,amount, bill_no,company_id,invoice_id) values($1,$2,$3,$4,$5,$6,$7,$8) returning *",
+              "INSERT INTO invoice_products(product_id,hsn,weight ,rate,amount, bill_no,company_id,invoice_id,unit,quantity) values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) returning *",
               [
                 data.product_id,
                 data.hsn,
@@ -145,13 +144,31 @@ const Addinvoice = (req, res) => {
                 bill_no,
                 company_id,
                 invoice_id,
+                data.unit,
+                data.quantity,
               ]
             )
             .then(function (result) {
-              resolve(result.rows[0]);
-            })
-            .catch(function (err) {
-              reject(err);
+              pool
+                .query(`SELECT * FROM public.products where product_id=$1 `, [
+                  data.product_id,
+                ])
+                .then((data1) => {
+                  let quantity = data1.rows[0].quantity;
+                  let quantityData =
+                    parseInt(quantity) - parseInt(data.quantity);
+                  pool
+                    .query(
+                      `UPDATE public.products SET  quantity=$2 WHERE product_id=$1`,
+                      [data1.rows[0].product_id, quantityData]
+                    )
+                    .then(() => {
+                      resolve(result.rows[0]);
+                    })
+                    .catch(function (err) {
+                      reject(err);
+                    });
+                });
             });
         });
       });
@@ -230,21 +247,46 @@ const UpdateinvoiceInfo = (req, invoice_id, res) => {
         .then((ress) => {
           req.productdata.map(async (data) => {
             try {
-              const result = await pool.query(
-                "INSERT INTO invoice_products(invoice_id, bill_no, company_id,  product_id, hsn, weight, rate, amount) values($1,$2,$3,$4,$5,$6,$7,$8) returning * ",
-                [
-                  invoice_id,
-                  bill_no,
-                  company_id,
-                  data.product_id,
-                  data.hsn,
-                  data.weight,
-                  data.rate,
-                  data.amount,
-                ]
-              );
-              resolve(result.rows[0]);
-            } catch (err) {
+              const result = await pool
+                .query(
+                  "INSERT INTO invoice_products(invoice_id, bill_no, company_id,  product_id, hsn, weight, rate, amount,unit,quantity) values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) returning * ",
+                  [
+                    invoice_id,
+                    bill_no,
+                    company_id,
+                    data.product_id,
+                    data.hsn,
+                    data.weight,
+                    data.rate,
+                    data.amount,
+                    data.unit,
+                    data.quantity,
+                  ]
+                )
+                .then(() => {
+                  pool
+                    .query(
+                      `SELECT * FROM public.products where product_id=$1 `,
+                      [data.product_id]
+                    )
+                    .then((data1) => {
+                      let quantity = data1.rows[0].quantity;
+                      let quantityData =
+                        parseInt(quantity) - parseInt(data.quantity);
+                      pool
+                        .query(
+                          `UPDATE public.products SET  quantity=$2 WHERE product_id=$1`,
+                          [data1.rows[0].product_id, quantityData]
+                        )
+                        .then(() => {
+                          resolve(result.rows[0]);
+                        })
+                        .catch(function (err) {
+                          reject(err);
+                        });
+                    });
+                });
+            } catch {
               reject(err);
             }
           });
@@ -252,6 +294,7 @@ const UpdateinvoiceInfo = (req, invoice_id, res) => {
     }
   });
 };
+
 const Permentdeletedinvoice = (invoice_id) => {
   return new Promise(function (resolve, reject) {
     if (!invoice_id) {

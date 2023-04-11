@@ -22,6 +22,16 @@ router.get(
     res.status(400).send({ error: error.message });
   }
 );
+router.get(
+  "/customersname",
+  customercontroller.GetCustomerName,
+  (req, res) => {
+    res.send(req.data);
+  },
+  (error, req, res, next) => {
+    res.status(400).send({ error: error.message });
+  }
+);
 router.post(
   "/customers",
   customercontroller.createCustomers,

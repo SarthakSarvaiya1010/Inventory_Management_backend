@@ -2,7 +2,7 @@ require("dotenv").config();
 var auth = require("../helpers/auth");
 var purchasebill = require("../models/purchasebill");
 var filter = require("../helpers/filter");
-var formValidation = require("../helpers/formValidation");
+const fromatedate = require("../helpers/helper");
 var customer = require("../models/customer");
 var product = require("../models/products");
 
@@ -16,6 +16,40 @@ const PurchaseBillList = (req, res) => {
       if (result) {
         purchasebill
           .GetPurchaseBillList(data_s)
+          .then(async function (result) {
+            return res.status(200).json(result);
+          })
+          .catch(function (error) {
+            return res.status(400).json({
+              message: error,
+              statusCode: 400,
+            });
+          });
+      } else {
+        return res.status(403).json({
+          message: "Authorization error",
+          statusCode: "403",
+        });
+      }
+    })
+    .catch(function (error) {
+      return res.status(403).json({
+        message: "Authorization Error",
+        statusCode: "403",
+      });
+    });
+};
+const PurchaseBillfilterList = (req, res) => {
+  let tokanData = req.headers["authorization"];
+  let data_s = filter.filter(req?.query);
+  let { Customer_name } = req.params;
+  console.log("Customer_name", Customer_name);
+  auth
+    .AUTH(tokanData)
+    .then(async function (result) {
+      if (result) {
+        purchasebill
+          .GetPurchaseBillfilterList(data_s)
           .then(async function (result) {
             return res.status(200).json(result);
           })
@@ -72,53 +106,79 @@ const PurchaseBillDeleteList = (req, res) => {
       });
     });
 };
-
-const AddPurchasebill = (req, res) => {
+const GetPurchasePage = (req, res) => {
   let tokanData = req.headers["authorization"];
+  let date = fromatedate.formatDate(new Date());
+  let data_s = filter.filter(req?.query);
+
+  let purchasedata = [];
   auth
     .AUTH(tokanData)
     .then(async function (result) {
       if (result) {
-        purchasebill
-          .Addpurchasebill(req.body)
-          .then(async function (result) {
-            const test = [];
-            let count = 0;
-            console.log("req?.body?.productdata", req?.body?.productdata);
-            req?.body?.productdata.map((e, index) => {
-              index++;
-              product
-                .getProductById(e.product_id)
-                .then(async function (result) {
-                  test.push({
-                    product_name: result?.product_name,
-                    bill_no: index,
-                    hsn: e?.hsn,
-                    weight: e?.weight,
-                    rate: e?.rate,
-                    amount: e?.amount,
-                  });
-                  count++;
-                  if (count === req?.body?.productdata.length) {
-                    res.status(200).json({
-                      status: "success",
-                      statusCode: "200",
-                      message: "success! Create Purchase Bill  suucessfully",
+        customer
+          .getCustomers(data_s)
+          .then(async function (customerlist) {
+            product
+              .getProducts(data_s)
+              .then(async function (productlist) {
+                if (productlist.length && customerlist.length) {
+                  purchasebill
+                    .getpurchaseLastRow()
+                    .then(async function (result) {
+                      if (result[0].max !== null) {
+                        const bill_no =
+                          parseInt(result[0].max) > 9
+                            ? parseInt(result[0].max) + 1
+                            : `0${parseInt(result[0].max) + 1}`;
+                        let invoice = {};
+                        invoice["bill_no"] = bill_no;
+                        invoice["date"] = date;
+                        invoice["CustomerList"] = customerlist
+                          ? customerlist
+                          : null;
+                        invoice["productList"] = productlist
+                          ? productlist
+                          : null;
+                        purchasedata.push(invoice);
+                        return res.status(200).json(purchasedata);
+                      } else {
+                        let invoice = {};
+                        invoice["bill_no"] = "01";
+                        invoice["date"] = date;
+                        invoice["CustomerList"] = customerlist
+                          ? customerlist
+                          : null;
+                        invoice["productList"] = productlist
+                          ? productlist
+                          : null;
+                        purchasedata.push(invoice);
+                        return res.status(200).json(purchasedata);
+                      }
                     });
-                  }
-                })
-                .catch(function (error) {
+                } else {
                   return res.status(400).json({
-                    message: error,
-                    statusCode: 430,
+                    message: "productlist and customerlist data not found",
                   });
+                }
+              })
+              .catch(function (err) {
+                return res.status(400).json({
+                  message: "productlist data not found",
+                  statusCode: 400,
                 });
+              });
+          })
+          .catch(function (err) {
+            return res.status(400).json({
+              message: "customer  data not found",
+              statusCode: 400,
             });
           })
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 415,
+              statusCode: 400,
             });
           });
       } else {
@@ -128,7 +188,43 @@ const AddPurchasebill = (req, res) => {
         });
       }
     })
-    .catch(function (result) {
+    .catch(function (error) {
+      return res.status(403).json({
+        message: "Authorization error",
+        statusCode: "403",
+      });
+    });
+};
+const AddPurchasebill = (req, res) => {
+  let tokanData = req.headers["authorization"];
+
+  auth
+    .AUTH(tokanData)
+    .then(async function (result) {
+      if (result) {
+        purchasebill
+          .AddPurchaseBill(req.body)
+          .then(async function (result) {
+            return res.status(200).json({
+              status: "success",
+              statusCode: "200",
+              message: "success! Create Purchase Bill  suucessfully",
+            });
+          })
+          .catch(function (error) {
+            return res.status(400).json({
+              message: error,
+              statusCode: "400",
+            });
+          });
+      } else {
+        return res.status(403).json({
+          message: "Authorization error",
+          statusCode: "403",
+        });
+      }
+    })
+    .catch(function (error) {
       return res.status(403).json({
         message: "Authorization error",
         statusCode: "403",
@@ -137,6 +233,7 @@ const AddPurchasebill = (req, res) => {
 };
 
 const UpdatePurchaseBill = (req, res) => {
+  console.log("req.body", req.body);
   let tokanData = req.headers["authorization"];
   let { purchase_id } = req.params;
   auth
@@ -243,6 +340,7 @@ const GetPurchaseListByID = (req, res) => {
 const UpdatePurchaseData = (req, res) => {
   let tokanData = req.headers["authorization"];
   const { purchase_id } = req.params;
+  console.log("req.body", req.body);
   let id = purchase_id;
   auth
     .AUTH(tokanData)
@@ -303,6 +401,114 @@ const UpdatePurchaseData = (req, res) => {
     });
 };
 
+const DeletePurchase = (req, res) => {
+  const { purchase_id } = req.params;
+  let tokanData = req.headers["authorization"];
+  auth
+    .AUTH(tokanData)
+    .then(async function (result) {
+      if (result) {
+        purchasebill
+          .IsPurchaseExistsByPurchase(purchase_id)
+          .then(async function (result) {
+            if (result) {
+              purchasebill
+                .DeletePurchase(purchase_id)
+                .then(async function (result) {
+                  return res.status(200).json({
+                    status: "success",
+                    statusCode: "200",
+                    message: "success! PurchaseBill  Deleted suucessfully",
+                  });
+                })
+                .catch(function (error) {
+                  return res.status(400).json({
+                    message: error,
+                    statusCode: 400,
+                  });
+                });
+            } else {
+              return res.status(200).json({
+                message: "user not exist",
+                statusCode: "400",
+              });
+            }
+          })
+          .catch(function (error) {
+            return res.status(400).json({
+              message: error,
+              statusCode: 400,
+            });
+          });
+      } else {
+        return res.status(403).json({
+          message: "Authorization error",
+          statusCode: "403",
+        });
+      }
+    })
+    .catch(function (error) {
+      return res.status(403).json({
+        message: "Authorization Error",
+        statusCode: "403",
+      });
+    });
+};
+
+const PermentDeletePurchase = (req, res) => {
+  const { purchase_id } = req.params;
+  let tokanData = req.headers["authorization"];
+  auth
+    .AUTH(tokanData)
+    .then(async function (result) {
+      if (result) {
+        purchasebill
+          .IsPurchaseExistsByPurchase(purchase_id)
+          .then(async function (result) {
+            if (result) {
+              purchasebill
+                .Permentdeletedpurchase(purchase_id)
+                .then(async function (result) {
+                  return res.status(200).json({
+                    status: "success",
+                    statusCode: "200",
+                    message: "success! invoiceData Deleted suucessfully",
+                  });
+                })
+                .catch(function (error) {
+                  return res.status(400).json({
+                    message: error,
+                    statusCode: 400,
+                  });
+                });
+            } else {
+              return res.status(200).json({
+                message: "user not exist",
+                statusCode: "400",
+              });
+            }
+          })
+          .catch(function (error) {
+            return res.status(400).json({
+              message: error,
+              statusCode: 400,
+            });
+          });
+      } else {
+        return res.status(403).json({
+          message: "Authorization error",
+          statusCode: "403",
+        });
+      }
+    })
+    .catch(function (error) {
+      return res.status(403).json({
+        message: "Authorization Error",
+        statusCode: "403",
+      });
+    });
+};
+
 module.exports = {
   PurchaseBillList,
   AddPurchasebill,
@@ -310,4 +516,8 @@ module.exports = {
   GetPurchaseListByID,
   UpdatePurchaseData,
   PurchaseBillDeleteList,
+  DeletePurchase,
+  GetPurchasePage,
+  PurchaseBillfilterList,
+  PermentDeletePurchase,
 };

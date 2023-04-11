@@ -20,6 +20,21 @@ const getCustomers = (data_s) => {
       });
   });
 };
+const getCustomersName = () => {
+  let delete_flag = "0";
+  return new Promise(function (resolve, reject) {
+    pool
+      .query(`SELECT customer_name  FROM customers WHERE  delete_flag=$1 `, [
+        delete_flag,
+      ])
+      .then(function (results) {
+        resolve(results.rows);
+      })
+      .catch(function (err) {
+        reject(err);
+      });
+  });
+};
 
 const GetDeletedcustomer = (data_s) => {
   let delete_flag = "1";
@@ -158,4 +173,5 @@ module.exports = {
   RemovedCustomer,
   RemovedCustomerFromTheList,
   getCustomersById,
+  getCustomersName,
 };

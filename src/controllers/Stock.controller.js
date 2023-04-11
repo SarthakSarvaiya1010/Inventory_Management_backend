@@ -1,9 +1,9 @@
 require("dotenv").config();
 var auth = require("../helpers/auth");
-var tax = require("../models/tax");
+var stock = require("../models/stock");
 var filter = require("../helpers/filter");
 
-const TaxList = (req, res) => {
+const StockReport = (req, res) => {
   let tokanData = req.headers["authorization"];
   let data_s = filter.filter(req?.query);
 
@@ -11,8 +11,8 @@ const TaxList = (req, res) => {
     .AUTH(tokanData)
     .then(async function (result) {
       if (result) {
-        tax
-          .GetTaxList(data_s)
+        stock
+          .getstock(data_s)
           .then(async function (result) {
             return res.status(200).json(result);
           })
@@ -38,5 +38,5 @@ const TaxList = (req, res) => {
 };
 
 module.exports = {
-  TaxList,
+  StockReport,
 };

@@ -1,4 +1,11 @@
+let convert = require("./misc");
+let formatDate = require("./helper");
 exports.filter = (data) => {
+  let pdate = null;
+  if (data?.date) {
+    pdate = convert.convert(data?.date);
+  }
+
   let searchKeyword = data?.searchKeyword || "";
   let whereFilter = null;
   let limit = data?.limit || 10;
@@ -51,5 +58,6 @@ exports.filter = (data) => {
     orderByString,
     order,
     paging,
+    pdate,
   };
 };

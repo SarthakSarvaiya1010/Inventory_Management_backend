@@ -42,15 +42,22 @@ const getDeletedProducts = (data_s) => {
 };
 
 const AddProduct = (request, image_src) => {
-  const { product_name, hsn, weight, description, product_type, unit } =
-    request;
+  const {
+    product_name,
+    hsn,
+    weight,
+    description,
+    product_type,
+    unit,
+    quantity,
+  } = request;
   const isactive = "1";
   const delete_flag = "0";
   const company_id = 1;
   return new Promise(function (resolve, reject) {
     pool
       .query(
-        "INSERT INTO products ( product_name, hsn, weight,description, product_type, isactive, delete_flag ,company_id , image_src ,unit ) VALUES ($1,$2, $3,$4,$5,$6,$7,$8 ,$9 ,$10)",
+        "INSERT INTO products ( product_name, hsn, weight,description, product_type, isactive, delete_flag ,company_id , image_src ,unit,quantity ) VALUES ($1,$2, $3,$4,$5,$6,$7,$8 ,$9 ,$10 ,$11)",
         [
           product_name,
           hsn,
@@ -62,6 +69,7 @@ const AddProduct = (request, image_src) => {
           company_id,
           image_src,
           unit,
+          quantity,
         ]
       )
       .then(function (result) {
@@ -120,6 +128,7 @@ const updateproduct = (data) => {
     weight,
     hsn,
     image_src,
+    quantity,
   } = data;
   return new Promise(function (resolve, reject) {
     if (!product_id) {
@@ -129,7 +138,7 @@ const updateproduct = (data) => {
       if (image_src) {
         pool
           .query(
-            "UPDATE products SET product_name=$2 , description=$3 , product_type=$4 , weight=$5 , hsn=$6 , image_src=$7 WHERE product_id = $1",
+            "UPDATE products SET product_name=$2 , description=$3 , product_type=$4 , weight=$5 , hsn=$6 , image_src=$7 , quantity=$8  WHERE product_id = $1",
             [
               product_id,
               product_name,
@@ -138,6 +147,7 @@ const updateproduct = (data) => {
               weight,
               hsn,
               image_src,
+              quantity,
             ]
           )
           .then(async function (result) {
@@ -149,8 +159,16 @@ const updateproduct = (data) => {
       } else {
         pool
           .query(
-            "UPDATE products SET product_name=$2 , description=$3 , product_type=$4 , weight=$5 , hsn=$6  WHERE product_id = $1",
-            [product_id, product_name, description, product_type, weight, hsn]
+            "UPDATE products SET product_name=$2 , description=$3 , product_type=$4 , weight=$5 , hsn=$6 , quantity=$7  WHERE product_id = $1",
+            [
+              product_id,
+              product_name,
+              description,
+              product_type,
+              weight,
+              hsn,
+              quantity,
+            ]
           )
           .then(async function (result) {
             resolve(result.rows[0]);

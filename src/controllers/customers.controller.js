@@ -37,6 +37,37 @@ const customerList = async function (req, res) {
       });
     });
 };
+const GetCustomerName = async function (req, res) {
+  let tokanData = req.headers["authorization"];
+  auth
+    .AUTH(tokanData)
+    .then(async function (result) {
+      if (result) {
+        customer
+          .getCustomersName()
+          .then(async function (result) {
+            return res.status(200).json(result);
+          })
+          .catch(function (error) {
+            return res.status(400).json({
+              message: error,
+              statusCode: 400,
+            });
+          });
+      } else {
+        return res.status(403).json({
+          message: "Authorization error",
+          statusCode: "403",
+        });
+      }
+    })
+    .catch(function (error) {
+      return res.status(403).json({
+        message: "Authorization Error",
+        statusCode: "403",
+      });
+    });
+};
 
 const GetDeletedCustomer = (req, res) => {
   let data_s = filter.filter(req?.query);
@@ -276,4 +307,5 @@ module.exports = {
   PermentDeleteCustomer,
   Removedcustomer,
   customerListById,
+  GetCustomerName,
 };

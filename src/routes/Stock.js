@@ -3,8 +3,8 @@ const router = express.Router();
 const stockcontroller = require("../controllers/Stock.controller");
 
 router.get(
-  "/StockRepor",
-  stockcontroller.TaxList,
+  "/stockreport",
+  stockcontroller.StockReport,
   (req, res) => {
     res.send(req.data);
   },

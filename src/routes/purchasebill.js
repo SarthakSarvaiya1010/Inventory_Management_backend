@@ -22,6 +22,16 @@ router.get(
     res.status(400).send({ error: error.message });
   }
 );
+router.get(
+  "/purchasebillfilterlist/:Customer_name",
+  purchasebillcontroller.PurchaseBillfilterList,
+  (req, res) => {
+    res.send(req.data);
+  },
+  (error, req, res, next) => {
+    res.status(400).send({ error: error.message });
+  }
+);
 router.post(
   "/addpurchasebill",
   purchasebillcontroller.AddPurchasebill,
@@ -58,6 +68,38 @@ router.get(
 router.put(
   "/updatepurchasedata/:purchase_id",
   purchasebillcontroller.UpdatePurchaseData,
+  (req, res) => {
+    res.send(req.data);
+  },
+  (error, req, res, next) => {
+    res.status(400).send({ error: error.message });
+  }
+);
+router.delete(
+  "/deletepurchase/:purchase_id",
+  purchasebillcontroller.DeletePurchase,
+  (req, res) => {
+    res.send(req.data);
+  },
+  (error, req, res, next) => {
+    res.status(400).send({ error: error.message });
+  }
+);
+
+router.delete(
+  "/permanentDeletepurchase/:purchase_id",
+  purchasebillcontroller.PermentDeletePurchase,
+  (req, res) => {
+    res.send(req.data);
+  },
+  (error, req, res, next) => {
+    res.status(400).send({ error: error.message });
+  }
+);
+
+router.get(
+  "/getpurchasepage",
+  purchasebillcontroller.GetPurchasePage,
   (req, res) => {
     res.send(req.data);
   },
