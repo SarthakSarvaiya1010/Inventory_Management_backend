@@ -74,6 +74,7 @@ const AddPurchaseBill = (req, res) => {
     discount,
     bill_amount,
     productdata,
+    payment,
   } = req;
 
   let NewDate = invoice_date.split("-", 3);
@@ -85,7 +86,7 @@ const AddPurchaseBill = (req, res) => {
   return new Promise(function (resolve, reject) {
     pool
       .query(
-        "INSERT INTO public.purchasebill(bill_no, purchase_date, customer_id, taxable_amount, sgst, cgst, discount ,bill_amount, isactive , delete_flag,company_id ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9 , $10, $11);",
+        "INSERT INTO public.purchasebill(bill_no, purchase_date, customer_id, taxable_amount, sgst, cgst, discount ,bill_amount, isactive , delete_flag,company_id ,payment ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9 , $10, $11,$12);",
         [
           bill_no,
           dateInvoice,
@@ -98,6 +99,7 @@ const AddPurchaseBill = (req, res) => {
           isactive,
           delete_flag,
           company_id,
+          payment,
         ]
       )
       .then(() => {
@@ -108,7 +110,6 @@ const AddPurchaseBill = (req, res) => {
           )
           .then((ress) => {
             const purchase_id = ress?.rows[0]?.purchase_id;
-            console.log("purchase_id", purchase_id);
             req?.productdata?.map((data) => {
               pool
                 .query(
@@ -141,9 +142,7 @@ const AddPurchaseBill = (req, res) => {
                           `UPDATE public.products SET  quantity=$2 WHERE product_id=$1`,
                           [data1.rows[0].product_id, quantityData]
                         )
-
                         .then(function (pdata) {
-                          console.log("pdata", pdata.rows);
                           resolve(result.rows[0]);
                         })
                         .catch(function (err) {
@@ -201,6 +200,7 @@ const UpdatepurchasebillInfo = (req, purchase_id, res) => {
     bill_amount,
     company_id,
     productdata,
+    payment,
   } = req;
   return new Promise(function (resolve, reject) {
     if (!purchase_id) {
@@ -209,7 +209,7 @@ const UpdatepurchasebillInfo = (req, purchase_id, res) => {
     } else {
       pool
         .query(
-          "UPDATE purchasebill  SET bill_no = $1, invoice_date = $2 ,customer_id = $3 , taxable_amount = $4 , sgst = $5 ,  cgst = $6 , discount = $7 , bill_amount = $8 , company_id = $9 WHERE purchase_id = $10 ",
+          "UPDATE purchasebill  SET bill_no = $1, invoice_date = $2 ,customer_id = $3 , taxable_amount = $4 , sgst = $5 ,  cgst = $6 , discount = $7 , bill_amount = $8 , company_id = $9 , payment=$10 WHERE purchase_id = $11 ",
           [
             bill_no,
             invoice_date,
@@ -220,6 +220,7 @@ const UpdatepurchasebillInfo = (req, purchase_id, res) => {
             discount,
             bill_amount,
             company_id,
+            payment,
             purchase_id,
           ]
         )
@@ -335,6 +336,7 @@ const UpdatePurchaseInfo = (req, purchase_id, res) => {
     bill_amount,
     company_id,
     productdata,
+    payment,
   } = req;
 
   return new Promise(function (resolve, reject) {
@@ -344,7 +346,7 @@ const UpdatePurchaseInfo = (req, purchase_id, res) => {
     } else {
       pool
         .query(
-          "UPDATE purchasebill SET bill_no = $1, purchase_date = $2 ,customer_id = $3 , taxable_amount = $4 , sgst = $5 ,  cgst = $6 , discount = $7 , bill_amount = $8 , company_id = $9 WHERE purchase_id = $10 ",
+          "UPDATE purchasebill SET bill_no = $1, purchase_date = $2 ,customer_id = $3 , taxable_amount = $4 , sgst = $5 ,  cgst = $6 , discount = $7 , bill_amount = $8 , company_id = $9 ,payment=$10 WHERE purchase_id = $11 ",
           [
             bill_no,
             purchase_date,
@@ -355,6 +357,7 @@ const UpdatePurchaseInfo = (req, purchase_id, res) => {
             discount,
             bill_amount,
             company_id,
+            payment,
             purchase_id,
           ]
         )

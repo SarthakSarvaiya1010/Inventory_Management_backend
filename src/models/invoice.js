@@ -98,10 +98,8 @@ const Addinvoice = (req, res) => {
     bill_amount,
     productdata,
   } = req;
-  console.log("done", invoice_date);
   let NewDate = invoice_date.split("-", 3);
   let dateInvoice = `${NewDate[1]}-${NewDate[0]}-${NewDate[2]}`;
-  console.log("dateInvoice", dateInvoice);
   let isactive = "1";
   let delete_flag = "0";
   let company_id = 1;

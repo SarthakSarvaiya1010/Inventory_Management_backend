@@ -214,7 +214,6 @@ const AddInvoice = (req, res) => {
     .AUTH(tokanData)
     .then(async function (result) {
       if (result) {
-        console.log("req.body", req.body);
         invoice
           .Addinvoice(req.body)
           .then(async function (result) {
