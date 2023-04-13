@@ -272,7 +272,6 @@ const getPurchaseListById = (purchase_id) => {
   });
 };
 const getproductListByPurchaseId = (invoice_id) => {
-  console.log("invoice_id", invoice_id);
   return new Promise(function (resolve, reject) {
     pool
       .query(
@@ -280,7 +279,6 @@ const getproductListByPurchaseId = (invoice_id) => {
         [invoice_id]
       )
       .then(function (results) {
-        console.log("results", results.row);
         resolve(results.rows);
       })
       .catch(function (error) {
@@ -295,7 +293,6 @@ const IsPurchaseExistsByPurchase = (purchase_id) => {
         purchase_id,
       ])
       .then(function (results) {
-        console.log("results", results.row);
         resolve(results.rows);
       })
       .catch(function (error) {

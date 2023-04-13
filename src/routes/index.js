@@ -7,6 +7,7 @@ const tax = require("./tax");
 const purchasebill = require("./purchasebill");
 const invoice = require("./invoice");
 const Stock = require("./Stock");
+const bank = require("./bank");
 const router = express.Router();
 
 // const api = new router();
@@ -23,4 +24,5 @@ router.use(tax);
 router.use(invoice);
 router.use(purchasebill);
 router.use(Stock);
+router.use(bank);
 module.exports = router;
