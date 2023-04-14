@@ -149,3 +149,15 @@ exports.UserformValidation = (data) => {
   console.log(error);
   return error;
 };
+exports.BankformValidation = (data) => {
+  let error = {};
+
+  let { bank_name, balance } = data;
+  if (!bank_name) {
+    error = "bank name is missing ";
+  } else if (!balance) {
+    error = "balance is missing";
+  }
+  console.log(error);
+  return error;
+};

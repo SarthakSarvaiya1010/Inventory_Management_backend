@@ -13,7 +13,7 @@ const GetBankList = () => {
   });
 };
 
-const AddNewbank = (request, response) => {
+const AddNewbank = (request, bankdata) => {
   const {
     bank_name,
     chaque_no,
@@ -23,6 +23,7 @@ const AddNewbank = (request, response) => {
     remainingamount,
     paidamount,
   } = request;
+  let balance = bankdata.balance - request.paidamount;
 
   return new Promise(function (resolve, reject) {
     pool
@@ -46,13 +47,33 @@ const AddNewbank = (request, response) => {
               [purchase_id, fullpayment]
             )
             .then(function (res) {
-              resolve(result.rows[0]);
+              pool
+                .query(
+                  "UPDATE bank_info  SET  balance=$2 WHERE bank_info_no = $1",
+                  [bankdata.bank_info_no, balance]
+                )
+                .then(function (res) {
+                  resolve(result.rows[0]);
+                })
+                .catch(function (err) {
+                  reject(err);
+                });
             })
             .catch(function (err) {
               reject(err);
             });
         } else {
-          resolve(result.rows[0]);
+          pool
+            .query(
+              "UPDATE bank_info  SET  balance=$2 WHERE bank_info_no = $1",
+              [bankdata.bank_info_no, balance]
+            )
+            .then(function (res) {
+              resolve(result.rows[0]);
+            })
+            .catch(function (err) {
+              reject(err);
+            });
         }
       })
       .catch(function (err) {

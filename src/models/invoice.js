@@ -97,6 +97,7 @@ const Addinvoice = (req, res) => {
     discount,
     bill_amount,
     productdata,
+    user_id,
   } = req;
   let NewDate = invoice_date.split("-", 3);
   let dateInvoice = `${NewDate[1]}-${NewDate[0]}-${NewDate[2]}`;
@@ -109,7 +110,7 @@ const Addinvoice = (req, res) => {
         "INSERT INTO public.invoice(bill_no, invoice_date, customer_id, taxable_amount, sgst, cgst, discount ,bill_amount, isactive , delete_flag,company_id ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9 , $10, $11);",
         [
           bill_no,
-          dateInvoice,
+          invoice_date,
           customer_id,
           taxable_amount,
           sgst,
@@ -161,7 +162,40 @@ const Addinvoice = (req, res) => {
                       [data1.rows[0].product_id, quantityData]
                     )
                     .then(() => {
-                      resolve(result.rows[0]);
+                      pool
+                        .query(
+                          `SELECT * FROM public.primary_bank where user_id=$1`,
+                          [user_id]
+                        )
+                        .then((res) => {
+                          pool
+                            .query(
+                              `SELECT * FROM public.bank_info where bank_info_no=$1`,
+                              [res?.rows[0]?.bank_info_no]
+                            )
+                            .then((ress) => {
+                              let balance =
+                                ress?.rows[0]?.balance + parseInt(bill_amount);
+
+                              pool
+                                .query(
+                                  `UPDATE public.bank_info SET  balance=$2  WHERE bank_info_no=$1;`,
+                                  [ress?.rows[0]?.bank_info_no, balance]
+                                )
+                                .then(() => {
+                                  resolve(result.rows[0]);
+                                })
+                                .catch(function (err) {
+                                  reject(err);
+                                });
+                            })
+                            .catch(function (err) {
+                              reject(err);
+                            });
+                        })
+                        .catch(function (err) {
+                          reject(err);
+                        });
                     })
                     .catch(function (err) {
                       reject(err);
@@ -215,6 +249,7 @@ const UpdateinvoiceInfo = (req, invoice_id, res) => {
     bill_amount,
     company_id,
     productdata,
+    user_id,
   } = req;
   return new Promise(function (resolve, reject) {
     if (!invoice_id) {

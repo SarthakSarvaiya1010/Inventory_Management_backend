@@ -455,6 +455,7 @@ const Login = (req, res) => {
               const name = user.name;
               const email = user.email;
               const role_id = user.role_id;
+              const user_id = user.user_uuid;
               User.GetcompanyIdByuserId(id)
                 .then((data) => {
                   const company_id = data?.company_id;
@@ -473,6 +474,7 @@ const Login = (req, res) => {
                         role_id: role_id,
                         accessToken: token,
                         company_id: company_id,
+                        user_id: user_id,
                       });
                     })
                     .catch(function (error) {

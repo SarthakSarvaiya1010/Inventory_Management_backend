@@ -2,8 +2,7 @@ const pool = require("../../config");
 var pass = require("../helpers/helper");
 var bcrypt = require("bcrypt");
 const e = require("express");
-
-const passwordResetAt = new Date(Date.now());
+let moment = require("moment");
 
 const getUsers = (data_s) => {
   let deleted_flag = "0";
@@ -437,6 +436,8 @@ const getComapnyByuserId = (user_id) => {
 
 const updateUserWithPaswword = (data) => {
   let ResetToken = data.passwordResetToken;
+  const passwordResetAt = moment();
+
   return new Promise(function (resolve, reject) {
     if (!data.id) {
       reject("error: id missing");

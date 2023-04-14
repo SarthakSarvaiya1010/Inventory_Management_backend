@@ -1,6 +1,7 @@
 require("dotenv").config();
 var auth = require("../helpers/auth");
 var bank = require("../models/bank");
+var bankinfo = require("../models/bankinfo");
 var filter = require("../helpers/filter");
 
 const BankList = (req, res) => {
@@ -43,18 +44,35 @@ const AddBankList = (req, res) => {
     .AUTH(tokanData)
     .then(async function (result) {
       if (result) {
-        bank
-          .AddNewbank(req.body)
-          .then(async function (result) {
-            return res.status(200).json({
-              message: "Succesfully! data  Added.",
-              statusCode: "200",
-            });
+        bankinfo
+          .bankGetByBankName(req.body)
+          .then(function (ress) {
+            if (ress.balance - req.body.paidamount > 0) {
+              bank
+                .AddNewbank(req.body, ress)
+                .then(async function (result) {
+                  return res.status(200).json({
+                    message: "Succesfully! data  Added.",
+                    statusCode: "200",
+                  });
+                })
+                .catch(function (error) {
+                  return res.status(400).json({
+                    message: error,
+                    statusCode: "400",
+                  });
+                });
+            } else {
+              return res.status(400).json({
+                message: "Bank Balance is Low",
+                statusCode: "400",
+              });
+            }
           })
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
