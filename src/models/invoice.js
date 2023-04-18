@@ -231,7 +231,7 @@ const IsinvoiceExistsByInvoiceId = (invoice_id) => {
         if (error) {
           throw error;
         }
-        return resolve(results.rowCount > 0);
+        return resolve(results.rows);
       }
     );
   });
@@ -312,14 +312,16 @@ const UpdateinvoiceInfo = (req, invoice_id, res) => {
                           [data1.rows[0].product_id, quantityData]
                         )
                         .then(() => {
-                          resolve(result.rows[0]);
+                          resolve(data1.rows[0]);
                         })
                         .catch(function (err) {
+                          console.log("err", err);
                           reject(err);
                         });
                     });
                 });
             } catch {
+              console.log("err", err);
               reject(err);
             }
           });

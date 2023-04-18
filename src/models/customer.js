@@ -161,6 +161,7 @@ const getCustomersById = (customer_id) => {
         resolve(results.rows);
       })
       .catch(function (err) {
+        console.log(err);
         reject(err);
       });
   });
