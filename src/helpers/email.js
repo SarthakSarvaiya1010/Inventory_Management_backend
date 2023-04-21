@@ -33,7 +33,7 @@ let mailTransporter = nodemailer.createTransport({
 async function send(template, subject) {
   // Generate HTML template based on the template string
   const html = pug.renderFile(`${__dirname}/resetPassword.pug`, {
-    firstName: template.firstName,
+    firstName: template.name,
     subject,
     url: subject,
   });
