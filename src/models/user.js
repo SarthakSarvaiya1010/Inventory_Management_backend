@@ -456,17 +456,17 @@ const updateUserWithPaswword = (data) => {
     }
   });
 };
-const updateUserWithSetPaswword = (data, password) => {
+const updateUserWithSetPaswword = (data, password, user_id) => {
   return new Promise(function (resolve, reject) {
-    if (!data) {
+    if (!user_id) {
       reject("error: id missing");
     } else {
       hashPassword(password).then(function (hash) {
         pool
-          .query("UPDATE users SET password=$2 WHERE passwordresettoken = $1", [
-            data,
-            hash,
-          ])
+          .query(
+            "UPDATE users SET password=$2 , passwordresettoken=$3 WHERE user_id = $1",
+            [user_id, hash, data]
+          )
           .then(function (result) {
             resolve(result.rows[0]);
           })

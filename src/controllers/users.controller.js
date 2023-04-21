@@ -667,8 +667,9 @@ const PasswordSet = (req, res) => {
           let date2 = moment(data.passwordresetat);
           let diffDate = date1.diff(date2, "minutes");
           console.log("diffDate", diffDate);
+          let id1 = null;
           if (diffDate < 10) {
-            User.updateUserWithSetPaswword(id, password)
+            User.updateUserWithSetPaswword(id1, password, data.user_id)
               .then(() => {
                 return res.status(200).json({
                   message: "Password Update successfully",
