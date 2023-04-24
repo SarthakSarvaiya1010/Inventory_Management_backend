@@ -8,7 +8,7 @@ exports.filter = (data) => {
 
   let searchKeyword = data?.searchKeyword || "";
   let whereFilter = null;
-  let limit = data?.limit || 10;
+  let limit = data?.limit || 100;
   let page = data?.page || 1;
 
   let test = data?.orderByString?.split("/");
