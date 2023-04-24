@@ -117,7 +117,7 @@ const createProducts = async function (req, res) {
             .catch(function (error) {
               return res.status(400).json({
                 message: error,
-                statusCode: 400,
+                statusCode: "400",
               });
             });
         } else {
