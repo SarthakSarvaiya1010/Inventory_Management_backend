@@ -248,6 +248,7 @@ const updateProducts = (req, res) => {
               product_type: req.body.product_type,
               weight: req.body.weight,
               hsn: req.body.hsn,
+              quantity: req.body.quantity,
               image_src: image_src,
             })
             .then(async function (result) {
