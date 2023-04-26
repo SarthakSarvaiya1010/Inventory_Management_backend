@@ -20,7 +20,7 @@ const BankInfoList = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -106,14 +106,14 @@ const BankInfoEdit = (req, res) => {
               .catch(function (error) {
                 return res.status(400).json({
                   message: error,
-                  statusCode: 400,
+                  statusCode: "400",
                 });
               });
           })
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -133,41 +133,50 @@ const BankInfoEdit = (req, res) => {
 const BankInfoupdate = (req, res) => {
   let tokanData = req.headers["authorization"];
   const { bank_id } = req.params;
+  let error = formValidation.BankformValidation(req.body);
+
   auth
     .AUTH(tokanData)
     .then(async function (result) {
       if (result) {
-        bankinfo
-          .GetBankInfoById(bank_id)
-          .then(async function (result) {
-            if (result) {
-              bankinfo
-                .UpdateBankInfo(req.body, bank_id)
-                .then(async function (ress) {
-                  return res.status(200).json({
-                    message: "Succesfully! data Update.",
-                    statusCode: "200",
+        if (!Object.keys(error).length) {
+          bankinfo
+            .GetBankInfoById(bank_id)
+            .then(async function (result) {
+              if (result) {
+                bankinfo
+                  .UpdateBankInfo(req.body, bank_id)
+                  .then(async function (ress) {
+                    return res.status(200).json({
+                      message: "Succesfully! data Update.",
+                      statusCode: "200",
+                    });
+                  })
+                  .catch(function (error) {
+                    return res.status(400).json({
+                      message: error,
+                      statusCode: "400",
+                    });
                   });
-                })
-                .catch(function (error) {
-                  return res.status(400).json({
-                    message: error,
-                    statusCode: "400",
-                  });
+              } else {
+                return res.status(400).json({
+                  message: "BankInfo not found",
+                  statusCode: "400",
                 });
-            } else {
+              }
+            })
+            .catch(function (error) {
               return res.status(400).json({
-                message: "BankInfo not found",
+                message: error,
                 statusCode: "400",
               });
-            }
-          })
-          .catch(function (error) {
-            return res.status(400).json({
-              message: error,
-              statusCode: "400",
             });
+        } else {
+          return res.status(400).json({
+            message: error,
+            statusCode: "400",
           });
+        }
       } else {
         return res.status(403).json({
           message: "Authorization error",

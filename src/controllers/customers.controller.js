@@ -20,7 +20,7 @@ const customerList = async function (req, res) {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -51,7 +51,7 @@ const GetCustomerName = async function (req, res) {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -85,7 +85,7 @@ const GetDeletedCustomer = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -218,7 +218,7 @@ const PermentDeleteCustomer = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -254,7 +254,7 @@ const Removedcustomer = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -285,7 +285,7 @@ const customerListById = async function (req, res) {
             return res.status(200).json(result);
           })
           .catch(function (error) {
-            return res.status(400).json({ message: error, statusCode: 400 });
+            return res.status(400).json({ message: error, statusCode: "400" });
           });
       } else {
         return res

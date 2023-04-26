@@ -31,7 +31,7 @@ const listUser = async function (req, res) {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -63,7 +63,7 @@ const GetDeletedUsers = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -109,14 +109,14 @@ const GetUsersByUser_uuId = (req, res) => {
               .catch(function (error) {
                 return res.status(400).json({
                   message: error,
-                  statusCode: 400,
+                  statusCode: "400",
                 });
               });
           })
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -185,7 +185,7 @@ const createUser = async function (req, res) {
                 .catch(function (error) {
                   return res.status(400).json({
                     message: error,
-                    statusCode: 400,
+                    statusCode: "400",
                   });
                 });
             }
@@ -345,7 +345,7 @@ const PermentDeleteUser = (req, res) => {
               .catch(function (error) {
                 return res.status(400).json({
                   message: error,
-                  statusCode: 400,
+                  statusCode: "400",
                 });
               });
           } else {
@@ -480,14 +480,14 @@ const Login = (req, res) => {
                     .catch(function (error) {
                       return res.status(400).json({
                         message: error,
-                        statusCode: 400,
+                        statusCode: "400",
                       });
                     });
                 })
                 .catch(function (error) {
                   return res.status(400).json({
                     message: error,
-                    statusCode: 400,
+                    statusCode: "400",
                   });
                 });
             }
@@ -600,7 +600,7 @@ const Passwordreset = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       }
@@ -608,7 +608,7 @@ const Passwordreset = (req, res) => {
     .catch(function (error) {
       return res.status(400).json({
         message: error,
-        statusCode: 400,
+        statusCode: "400",
       });
     });
 };
@@ -646,7 +646,7 @@ const PasswordresetTimeCheck = (req, res) => {
     .catch(function (error) {
       return res.status(400).json({
         message: error,
-        statusCode: 400,
+        statusCode: "400",
       });
     });
 };

@@ -22,7 +22,7 @@ const PurchaseBillList = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -56,7 +56,7 @@ const PurchaseBillfilterList = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -89,7 +89,7 @@ const PurchaseBillDeleteList = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -165,20 +165,20 @@ const GetPurchasePage = (req, res) => {
               .catch(function (err) {
                 return res.status(400).json({
                   message: "productlist data not found",
-                  statusCode: 400,
+                  statusCode: "400",
                 });
               });
           })
           .catch(function (err) {
             return res.status(400).json({
               message: "customer  data not found",
-              statusCode: 400,
+              statusCode: "400",
             });
           })
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -233,7 +233,6 @@ const AddPurchasebill = (req, res) => {
 };
 
 const UpdatePurchaseBill = (req, res) => {
-  console.log("req.body", req.body);
   let tokanData = req.headers["authorization"];
   let { purchase_id } = req.params;
   auth
@@ -312,13 +311,13 @@ const GetPurchaseListByID = (req, res) => {
               .catch(function (error) {
                 return res.status(400).json({
                   message: error,
-                  statusCode: 400,
+                  statusCode: "400",
                 });
               })
               .catch(function (error) {
                 return res.status(400).json({
                   message: error,
-                  statusCode: 400,
+                  statusCode: "400",
                 });
               });
           });
@@ -340,7 +339,6 @@ const GetPurchaseListByID = (req, res) => {
 const UpdatePurchaseData = (req, res) => {
   let tokanData = req.headers["authorization"];
   const { purchase_id } = req.params;
-  console.log("req.body", req.body);
   let id = purchase_id;
   auth
     .AUTH(tokanData)
@@ -363,13 +361,13 @@ const UpdatePurchaseData = (req, res) => {
                 .catch(function (error) {
                   return res.status(400).json({
                     message: error,
-                    statusCode: 400,
+                    statusCode: "400",
                   });
                 })
                 .catch(function (error) {
                   return res.status(400).json({
                     message: error,
-                    statusCode: 400,
+                    statusCode: "400",
                   });
                 });
               // }
@@ -383,7 +381,7 @@ const UpdatePurchaseData = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -424,7 +422,7 @@ const DeletePurchase = (req, res) => {
                 .catch(function (error) {
                   return res.status(400).json({
                     message: error,
-                    statusCode: 400,
+                    statusCode: "400",
                   });
                 });
             } else {
@@ -437,7 +435,7 @@ const DeletePurchase = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -478,7 +476,7 @@ const PermentDeletePurchase = (req, res) => {
                 .catch(function (error) {
                   return res.status(400).json({
                     message: error,
-                    statusCode: 400,
+                    statusCode: "400",
                   });
                 });
             } else {
@@ -491,7 +489,7 @@ const PermentDeletePurchase = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {

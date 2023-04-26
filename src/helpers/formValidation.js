@@ -10,28 +10,8 @@ exports.formValidation = (data) => {
   } else if (!weight) {
     error = "Weight is missing";
   }
-  //   if (!phone) {
-  //     error = "phone number is missing ";
-  //   } else if (
-  //     !/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(parseInt(phone))
-  //   ) {
-  //     error = "phone number is invalid";
-  //   } else if (!name) {
-  //     error = "name is missing ";
-  //   } else if (!email) {
-  //     error = "Email id is missing";
-  //   } else if (!/\S+@\S+\.\S+/.test(email)) {
-  //     error = "Email address is invalid";
-  //   } else if (!dob) {
-  //     error = "birthday is missing";
-  //   } else if (!new Date(dob)) {
-  //     error = "birthday is invalide";
-  //   } else if (!password && !validation) {
-  //     error = "Password is missing";
-  //   } else if (password?.length < 6 && !validation) {
-  //     error = "Password must be 6 or more characters";
-  //   }
 
+  console.log(error);
   return error;
 };
 exports.TaxformValidation = (data) => {

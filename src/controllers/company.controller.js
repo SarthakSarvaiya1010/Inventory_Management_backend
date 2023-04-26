@@ -19,7 +19,7 @@ const GetCompanyList = async function (req, res) {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -53,7 +53,7 @@ const GetDeletedCompany = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -85,7 +85,7 @@ const GetCompanyByCompanyId = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -152,13 +152,13 @@ const AddCompany_info = async function (req, res) {
               .catch(function (error) {
                 return res.status(400).json({
                   message: error,
-                  statusCode: 400,
+                  statusCode: "400",
                 });
               });
           } else {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           }
         }
@@ -218,13 +218,13 @@ const EditCompanyInfo = (req, res) => {
                   .catch(function (error) {
                     return res.status(400).json({
                       message: error,
-                      statusCode: 400,
+                      statusCode: "400",
                     });
                   });
               } else {
                 return res.status(400).json({
                   message: error,
-                  statusCode: 400,
+                  statusCode: "400",
                 });
               }
             } else {
@@ -237,7 +237,7 @@ const EditCompanyInfo = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -277,7 +277,7 @@ const PermentDeleteCompany = (req, res) => {
                 .catch(function (error) {
                   return res.status(400).json({
                     message: error,
-                    statusCode: 400,
+                    statusCode: "400",
                   });
                 });
             } else {
@@ -290,7 +290,7 @@ const PermentDeleteCompany = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -330,7 +330,7 @@ const DeleteCompany = (req, res) => {
                 .catch(function (error) {
                   return res.status(400).json({
                     message: error,
-                    statusCode: 400,
+                    statusCode: "400",
                   });
                 });
             } else {
@@ -343,7 +343,7 @@ const DeleteCompany = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {

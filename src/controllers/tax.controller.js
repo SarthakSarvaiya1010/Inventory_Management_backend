@@ -20,7 +20,7 @@ const TaxList = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -52,7 +52,7 @@ const GetDeletedTaxList = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -145,13 +145,13 @@ const EditTaxData = (req, res) => {
                   .catch(function (error) {
                     return res.status(400).json({
                       message: error,
-                      statusCode: 400,
+                      statusCode: "400",
                     });
                   });
               } else {
                 return res.status(400).json({
                   message: error,
-                  statusCode: 400,
+                  statusCode: "400",
                 });
               }
             } else {
@@ -164,7 +164,7 @@ const EditTaxData = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -204,7 +204,7 @@ const PermanentDeleteTax = (req, res) => {
                 .catch(function (error) {
                   return res.status(400).json({
                     message: error,
-                    statusCode: 400,
+                    statusCode: "400",
                   });
                 });
             } else {
@@ -217,7 +217,7 @@ const PermanentDeleteTax = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -257,7 +257,7 @@ const DeleteTax = (req, res) => {
                 .catch(function (error) {
                   return res.status(400).json({
                     message: error,
-                    statusCode: 400,
+                    statusCode: "400",
                   });
                 });
             } else {
@@ -270,7 +270,7 @@ const DeleteTax = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -301,7 +301,7 @@ const TaxListById = (req, res) => {
             return res.status(200).json(result);
           })
           .catch(function (error) {
-            return res.status(400).json({ message: error, statusCode: 400 });
+            return res.status(400).json({ message: error, statusCode: "400" });
           });
       } else {
         return res

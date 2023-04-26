@@ -20,7 +20,7 @@ const productlist = async function (req, res) {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -57,7 +57,7 @@ const productlistData = async function (req, res) {
     .catch(function (error) {
       return res.status(400).json({
         message: error,
-        statusCode: 400,
+        statusCode: "400",
       });
     });
 };
@@ -77,7 +77,7 @@ const GetDeletedProduct = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -96,7 +96,9 @@ const GetDeletedProduct = (req, res) => {
 };
 const createProducts = async function (req, res) {
   let tokanData = req.headers["authorization"];
-  let error = formValidation.formValidation(req.body);
+  let error = formValidation.formValidation(
+    JSON.parse(JSON.stringify(req.body))
+  );
   auth
     .AUTH(tokanData)
     .then(async function (result) {
@@ -107,7 +109,7 @@ const createProducts = async function (req, res) {
         let image_src = base64Data;
         if (!Object.keys(error).length) {
           products
-            .AddProduct(req.body, image_src)
+            .AddProduct(JSON.parse(JSON.stringify(req.body)), image_src)
             .then(async function (result) {
               return res.status(200).json({
                 message: "Succesfully! product Added",
@@ -163,7 +165,7 @@ const DeleteProduct = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
         // }
@@ -206,7 +208,7 @@ const PermentDeleteProduct = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
         // }

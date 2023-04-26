@@ -15,6 +15,7 @@ var converter = require("number-to-words");
 let timestamp = Date.now();
 let fileName = "./invoice/sample-invoice_data" + timestamp + ".pdf";
 var test = require("../helpers/generate");
+var stock = require("../models/stock");
 
 const InvoiceList = (req, res) => {
   let tokanData = req.headers["authorization"];
@@ -31,7 +32,7 @@ const InvoiceList = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -63,7 +64,7 @@ const InvoiceDeleteList = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -107,7 +108,7 @@ const GetInvoiceListByID = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -178,20 +179,20 @@ const GetInvoicePage = (req, res) => {
               .catch(function (err) {
                 return res.status(400).json({
                   message: "productlist data not found",
-                  statusCode: 400,
+                  statusCode: "400",
                 });
               });
           })
           .catch(function (err) {
             return res.status(400).json({
               message: "customer  data not found",
-              statusCode: 400,
+              statusCode: "400",
             });
           })
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -215,122 +216,145 @@ const AddInvoice = (req, res) => {
     .AUTH(tokanData)
     .then(async function (result) {
       if (result) {
-        invoice
-          .Addinvoice(req.body)
-          .then(async function (result) {
-            customer
-              .getCustomersById(req.body.customer_id)
-              .then(async function (result) {
-                let invoiceDataDummy = [
-                  {
-                    customer_name: result[0]?.customer_name,
-                    bill_no: req?.body?.bill_no,
-                    customer_address: result[0]?.address,
-                    customer_mobile_no: result[0]?.mobile_no,
-                    gst: result[0]?.customer_gst,
-                    taxable_amount: req?.body?.taxable_amount,
-                    sgst: req?.body?.sgst,
-                    cgst: req?.body?.cgst,
-                    discount: req?.body?.discount,
-                    bill_amount: req?.body?.bill_amount,
-                  },
-                ];
-                const contentOri = await readFile(
-                  "src/helpers/invoice_original.hbs",
-                  "utf8"
-                );
-                const contentDup = await readFile(
-                  "src/helpers/invoice_duplicate.hbs",
-                  "utf8"
-                );
-                const template = hbs.compile(contentOri + contentDup);
-                // new Date(invoiceDataDummy[0].invoice_date);
-                let date = [
-                  {
-                    date: req?.body?.invoice_date,
-                  },
-                ];
-                const test = [];
-
-                const productdatatyp = req.body.productdata;
-                let count = 0;
-
-                req?.body?.productdata.map((e, index) => {
-                  index++;
-                  product
-                    .getProductById(e.product_id)
+        stock
+          .CheckStock(req.body)
+          .then(async function (result1) {
+            if (result1) {
+              invoice
+                .Addinvoice(req.body)
+                .then(async function (result) {
+                  customer
+                    .getCustomersById(req.body.customer_id)
                     .then(async function (result) {
-                      test.push({
-                        product_name: result?.product_name,
-                        bill_no: index,
-                        hsn: e?.hsn,
-                        weight: e?.weight,
-                        rate: e?.rate,
-                        amount: e?.amount,
-                      });
-                      count++;
-                      const toWords = [
+                      let invoiceDataDummy = [
                         {
-                          toWords: converter.toWords(req?.body?.bill_amount),
+                          customer_name: result[0]?.customer_name,
+                          bill_no: req?.body?.bill_no,
+                          customer_address: result[0]?.address,
+                          customer_mobile_no: result[0]?.mobile_no,
+                          gst: result[0]?.customer_gst,
+                          taxable_amount: req?.body?.taxable_amount,
+                          sgst: req?.body?.sgst,
+                          cgst: req?.body?.cgst,
+                          discount: req?.body?.discount,
+                          bill_amount: req?.body?.bill_amount,
                         },
                       ];
-                      if (
-                        count === req?.body?.productdata.length &&
-                        req?.body?.productdata.length <= 10
-                      ) {
-                        [...Array(5 - req.body.productdata.length)].map((e) =>
-                          test.push({})
-                        );
-                      }
-                      const html = template({
-                        invoiceDataDummy,
-                        test,
-                        productdatatyp,
-                        toWords,
-                        date,
-                      });
-                      let pdf_data;
-                      const options = {
-                        base: `${req.protocol}://${req.get("host")}`, // http://localhost:3000
-                        format: "A4",
-                      };
-
-                      if (count === req?.body?.productdata.length) {
-                        pdf.create(html, options).toBuffer((err, buffer) => {
-                          if (err) return console.log(err);
-                          // stream.pipe(fs.createWriteStream(fileName));
-                          // res.attachment("invoice.pdf");
-                          // res.end(buffer);
-                          pdf_data = buffer;
-                          setTimeout(() => {
-                            pdfCall();
-                          }, 500);
-                        });
-                        const pdfCall = () => {
-                          // "./invoice/sample-invoice_data 1676630885015.pdf";
-                          // const pdfData = fs.readFileSync(test_data_1);
-                          const base64Data =
-                            Buffer.from(pdf_data).toString("base64");
-                          res.status(200).json({
-                            status: "success",
-                            statusCode: "200",
-                            invoicePdf: base64Data,
-                            message: "success! Create invoice  suucessfully",
+                      const contentOri = await readFile(
+                        "src/helpers/invoice_original.hbs",
+                        "utf8"
+                      );
+                      const contentDup = await readFile(
+                        "src/helpers/invoice_duplicate.hbs",
+                        "utf8"
+                      );
+                      const template = hbs.compile(contentOri + contentDup);
+                      // new Date(invoiceDataDummy[0].invoice_date);
+                      let date = [
+                        {
+                          date: req?.body?.invoice_date,
+                        },
+                      ];
+                      const test = [];
+                      const productdatatyp = req.body.productdata;
+                      let count = 0;
+                      req?.body?.productdata.map((e, index) => {
+                        index++;
+                        product
+                          .getProductById(e.product_id)
+                          .then(async function (result) {
+                            test.push({
+                              product_name: result?.product_name,
+                              bill_no: index,
+                              hsn: e?.hsn,
+                              weight: e?.weight,
+                              rate: e?.rate,
+                              amount: e?.amount,
+                            });
+                            count++;
+                            const toWords = [
+                              {
+                                toWords: converter.toWords(
+                                  req?.body?.bill_amount
+                                ),
+                              },
+                            ];
+                            if (
+                              count === req?.body?.productdata.length &&
+                              req?.body?.productdata.length <= 10
+                            ) {
+                              [...Array(5 - req.body.productdata.length)].map(
+                                (e) => test.push({})
+                              );
+                            }
+                            const html = template({
+                              invoiceDataDummy,
+                              test,
+                              productdatatyp,
+                              toWords,
+                              date,
+                            });
+                            let pdf_data;
+                            const options = {
+                              base: `${req.protocol}://${req.get("host")}`, // http://localhost:3000
+                              format: "A4",
+                            };
+                            if (count === req?.body?.productdata.length) {
+                              pdf
+                                .create(html, options)
+                                .toBuffer((err, buffer) => {
+                                  if (err) return console.log(err);
+                                  // stream.pipe(fs.createWriteStream(fileName));
+                                  // res.attachment("invoice.pdf");
+                                  // res.end(buffer);
+                                  pdf_data = buffer;
+                                  setTimeout(() => {
+                                    pdfCall();
+                                  }, 500);
+                                });
+                              const pdfCall = () => {
+                                // "./invoice/sample-invoice_data 1676630885015.pdf";
+                                // const pdfData = fs.readFileSync(test_data_1);
+                                const base64Data =
+                                  Buffer.from(pdf_data).toString("base64");
+                                res.status(200).json({
+                                  status: "success",
+                                  statusCode: "200",
+                                  invoicePdf: base64Data,
+                                  message:
+                                    "success! Create invoice  suucessfully",
+                                });
+                                // res.end(buffer);
+                              };
+                            }
+                          })
+                          .catch(function (error) {
+                            return res.status(400).json({
+                              message: error,
+                              statusCode: "400",
+                            });
                           });
-
-                          // res.end(buffer);
-                        };
-                      }
+                      });
                     })
-                    .catch();
+                    .catch(function (error) {
+                      return res.status(400).json({
+                        message: error,
+                        statusCode: "400",
+                      });
+                    });
+                })
+                .catch(function (error) {
+                  return res.status(400).json({
+                    message: error,
+                    statusCode: "400",
+                  });
                 });
-              })
-              .catch(function (error) {
-                return res.status(400).json({
-                  message: error,
-                  statusCode: "400",
-                });
+            } else {
+              return res.status(400).json({
+                message: "product quantity is not enough",
+                statusCode: "400",
               });
+            }
           })
           .catch(function (error) {
             return res.status(400).json({
@@ -338,14 +362,6 @@ const AddInvoice = (req, res) => {
               statusCode: "400",
             });
           });
-        // }
-        // else {
-        //   return res.status(400).json({
-        //     message: "Please create new bill no",
-        //     statusCode: "400",
-        //   });
-        // }
-        // });
       } else {
         return res.status(403).json({
           message: "Authorization error",
@@ -573,7 +589,7 @@ const PermentDeleteInvoice = (req, res) => {
                 .catch(function (error) {
                   return res.status(400).json({
                     message: error,
-                    statusCode: 400,
+                    statusCode: "400",
                   });
                 });
             } else {
@@ -586,7 +602,7 @@ const PermentDeleteInvoice = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -627,7 +643,7 @@ const DeleteInvoice = (req, res) => {
                 .catch(function (error) {
                   return res.status(400).json({
                     message: error,
-                    statusCode: 400,
+                    statusCode: "400",
                   });
                 });
             } else {
@@ -640,7 +656,7 @@ const DeleteInvoice = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
@@ -721,7 +737,7 @@ const checkpdf = (req, res) => {
     .catch(function (error) {
       return res.status(400).json({
         message: error,
-        statusCode: 400,
+        statusCode: "400",
       });
     });
 };
@@ -843,7 +859,7 @@ const printInvoice = (req, res) => {
           .catch(function (error) {
             return res.status(400).json({
               message: error,
-              statusCode: 400,
+              statusCode: "400",
             });
           });
       } else {
