@@ -107,18 +107,6 @@ const AddUser = (request, response) => {
     return new Promise(function (resolve, reject) {
       hashPassword(password)
         .then(function (hash) {
-          console.log(
-            "fsdfklj",
-            name,
-            email,
-            hash,
-            mobile_no_data,
-            address,
-            role_id,
-            isactive,
-            deleted_flag,
-            typeof mobile_no_data
-          );
           return pool.query(
             "INSERT INTO users (name, email,password,mobile_no,image_src,address,role_id,isactive,deleted_flag) VALUES ($1, $2, $3,$4,$5,$6,$7,$8,$9)",
             [
