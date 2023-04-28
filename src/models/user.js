@@ -75,6 +75,8 @@ const AddUser = (request, response) => {
   } = request;
   const isactive = "1";
   const deleted_flag = "0";
+  let mobile_no_data = parseInt(mobile_no);
+
   if (!company_id) {
     return new Promise(function (resolve, reject) {
       hashPassword(password)
@@ -85,7 +87,7 @@ const AddUser = (request, response) => {
               name,
               email,
               hash,
-              mobile_no,
+              mobile_no_data,
               image_src,
               address,
               role_id,
@@ -105,13 +107,25 @@ const AddUser = (request, response) => {
     return new Promise(function (resolve, reject) {
       hashPassword(password)
         .then(function (hash) {
+          console.log(
+            "fsdfklj",
+            name,
+            email,
+            hash,
+            mobile_no_data,
+            address,
+            role_id,
+            isactive,
+            deleted_flag,
+            typeof mobile_no_data
+          );
           return pool.query(
             "INSERT INTO users (name, email,password,mobile_no,image_src,address,role_id,isactive,deleted_flag) VALUES ($1, $2, $3,$4,$5,$6,$7,$8,$9)",
             [
               name,
               email,
               hash,
-              mobile_no,
+              mobile_no_data,
               image_src,
               address,
               role_id,

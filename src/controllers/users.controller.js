@@ -143,12 +143,14 @@ const createUser = async function (req, res) {
           return res.status(400).send({
             message: "No file received or invalid file type",
             success: false,
+            statusCode: "400",
           });
         } else {
           User.isUserExists(req.body.email).then((isExists) => {
             if (isExists) {
               return res.status(400).json({
-                message: "email is taken",
+                message:
+                  "This email address is already in use. Please try a different one",
                 statusCode: "400",
               });
             } else {
@@ -165,7 +167,7 @@ const createUser = async function (req, res) {
                 address,
                 role_id,
                 company_id,
-              } = req.body;
+              } = JSON.parse(JSON.stringify(req.body));
               User.AddUser({
                 name,
                 email,

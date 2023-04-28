@@ -180,6 +180,7 @@ const AddCompany_info = async function (req, res) {
 const EditCompanyInfo = (req, res) => {
   let tokanData = req.headers["authorization"];
   let error = formValidation.CompanyformValidation(req.body);
+  console.log("req.params.company_id", req?.params?.company_id);
   auth
     .AUTH(tokanData)
     .then(async function (result) {
@@ -188,13 +189,13 @@ const EditCompanyInfo = (req, res) => {
           .isCompanyExists(req.params.company_id)
           .then(async function (result) {
             if (result) {
-              const base64Data = req?.file
-                ? Buffer.from(req?.file?.buffer).toString("base64")
-                : null;
-              let image_src = base64Data;
-
               // if (req.body.company_id && req.body.role_id) {
               if (!Object.keys(error).length) {
+                const base64Data = req?.file
+                  ? Buffer.from(req?.file?.buffer).toString("base64")
+                  : null;
+                let image_src = base64Data;
+
                 company
                   .Editcompanyinfo({
                     company_id: req.params.company_id,
@@ -228,7 +229,7 @@ const EditCompanyInfo = (req, res) => {
                 });
               }
             } else {
-              return res.status(200).json({
+              return res.status(400).json({
                 message: "user not exist",
                 statusCode: "400",
               });
