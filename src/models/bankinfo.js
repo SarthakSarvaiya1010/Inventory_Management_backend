@@ -36,7 +36,6 @@ const AddNewbankInfo = (request) => {
               user_id,
             ])
             .then(function (res) {
-              console.log("res.rows12345", res.rows);
               if (res.rows.length) {
                 pool
                   .query(`SELECT * FROM public.bank_info where user_id=$1`, [
@@ -70,7 +69,7 @@ const AddNewbankInfo = (request) => {
                   ])
                   .then(function (res) {
                     let is_primary = 1;
-                    console.log("(()8");
+
                     pool
                       .query(
                         `INSERT INTO public.primary_bank(
@@ -158,7 +157,6 @@ const UpdateBankInfo = (request, bank_id) => {
             [user_id, bank_id]
           )
           .then(function (res) {
-            console.log("results.rows", results.rows);
             resolve(results.rows);
           })
           .catch(function (err) {
@@ -205,7 +203,6 @@ const UpdateBankbalance = (request, amount) => {
                 [res.rows[0].bank_info_no, balanceData]
               )
               .then(function (res) {
-                console.log("res", res.rows);
                 resolve(res.rows);
               })
               .catch(function (err) {

@@ -201,7 +201,6 @@ const Deletecompany = (company_id) => {
   let delete_flag = "1";
   return new Promise(function (resolve, reject) {
     if (!company_id) {
-      console.log("company_id---->", customer_id);
       console("error:company_id is missing");
       reject("error:company_id is missing");
     } else {

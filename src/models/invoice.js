@@ -156,7 +156,7 @@ const Addinvoice = (req, res) => {
                   let quantity = data1.rows[0].quantity;
                   let quantityData =
                     parseInt(quantity) - parseInt(data.quantity);
-                  console.log("quantityData", quantityData);
+
                   pool
                     .query(
                       `UPDATE public.products SET  quantity=$2 WHERE product_id=$1`,
@@ -252,7 +252,6 @@ const UpdateinvoiceInfo = (req, invoice_id, res) => {
     productdata,
     user_id,
   } = req;
-  console.log("req", req);
   return new Promise(function (resolve, reject) {
     if (!invoice_id) {
       console.log("error: invoice_id missing");

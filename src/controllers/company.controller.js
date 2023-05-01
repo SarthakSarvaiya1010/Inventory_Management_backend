@@ -114,6 +114,7 @@ const AddCompany_info = async function (req, res) {
           return res.status(400).send({
             message: "No file received or invalid file type",
             success: false,
+            statusCode: "400",
           });
         } else {
           const base64Data = req?.file
@@ -180,7 +181,6 @@ const AddCompany_info = async function (req, res) {
 const EditCompanyInfo = (req, res) => {
   let tokanData = req.headers["authorization"];
   let error = formValidation.CompanyformValidation(req.body);
-  console.log("req.params.company_id", req?.params?.company_id);
   auth
     .AUTH(tokanData)
     .then(async function (result) {

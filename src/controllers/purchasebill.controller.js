@@ -43,7 +43,6 @@ const PurchaseBillfilterList = (req, res) => {
   let tokanData = req.headers["authorization"];
   let data_s = filter.filter(req?.query);
   let { Customer_name } = req.params;
-  console.log("Customer_name", Customer_name);
   auth
     .AUTH(tokanData)
     .then(async function (result) {

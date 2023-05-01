@@ -102,6 +102,7 @@ const GetUsersByUser_uuId = (req, res) => {
                 user["role_id"] = result.role_id;
                 user["isactive"] = result.isactive;
                 user["password"] = result.password;
+                user["confrom_password"] = result.password;
                 user["deleted_flag"] = result.deleted_flag;
                 user["company_id"] = results.company_id;
                 return res.status(200).json(user);
@@ -135,62 +136,70 @@ const GetUsersByUser_uuId = (req, res) => {
 };
 const createUser = async function (req, res) {
   let tokanData = req.headers["authorization"];
+  let error = formValidation.UserformValidation(req.body);
   auth
     .AUTH(tokanData)
     .then(async function (result) {
       if (result) {
-        if (!req?.file?.buffer) {
-          return res.status(400).send({
-            message: "No file received or invalid file type",
-            success: false,
-            statusCode: "400",
-          });
-        } else {
-          User.isUserExists(req.body.email).then((isExists) => {
-            if (isExists) {
-              return res.status(400).json({
-                message:
-                  "This email address is already in use. Please try a different one",
-                statusCode: "400",
-              });
-            } else {
-              const base64Data = req?.file
-                ? Buffer.from(req?.file?.buffer).toString("base64")
-                : null;
-              let image_src = base64Data;
-
-              let {
-                name,
-                email,
-                password,
-                mobile_no,
-                address,
-                role_id,
-                company_id,
-              } = JSON.parse(JSON.stringify(req.body));
-              User.AddUser({
-                name,
-                email,
-                password,
-                mobile_no,
-                address,
-                role_id,
-                company_id,
-                image_src,
-              })
-                .then(async function (result) {
-                  return res.status(200).json({
-                    message: "Succesfully! user Added",
-                    statusCode: "200",
-                  });
-                })
-                .catch(function (error) {
-                  return res.status(400).json({
-                    message: error,
-                    statusCode: "400",
-                  });
+        if (!Object.keys(error).length) {
+          if (!req?.file?.buffer) {
+            return res.status(400).send({
+              message: "No file received or invalid file type",
+              success: false,
+              statusCode: "400",
+            });
+          } else {
+            User.isUserExists(req.body.email).then((isExists) => {
+              if (isExists) {
+                return res.status(400).json({
+                  message:
+                    "This email address is already in use. Please try a different one",
+                  statusCode: "400",
                 });
-            }
+              } else {
+                const base64Data = req?.file
+                  ? Buffer.from(req?.file?.buffer).toString("base64")
+                  : null;
+                let image_src = base64Data;
+
+                let {
+                  name,
+                  email,
+                  password,
+                  mobile_no,
+                  address,
+                  role_id,
+                  company_id,
+                } = JSON.parse(JSON.stringify(req.body));
+                User.AddUser({
+                  name,
+                  email,
+                  password,
+                  mobile_no,
+                  address,
+                  role_id,
+                  company_id,
+                  image_src,
+                })
+                  .then(async function (result) {
+                    return res.status(200).json({
+                      message: "Succesfully! user Added",
+                      statusCode: "200",
+                    });
+                  })
+                  .catch(function (error) {
+                    return res.status(400).json({
+                      message: error,
+                      statusCode: "400",
+                    });
+                  });
+              }
+            });
+          }
+        } else {
+          return res.status(400).json({
+            message: error,
+            statusCode: "400",
           });
         }
       } else {
@@ -420,7 +429,6 @@ const Login = (req, res) => {
   const { email, password } = req.body;
   console.log("email, password", email, password);
   User.isUserExists(email).then((isExists) => {
-    console.log("isExists", isExists);
     if (!isExists) {
       return res.status(400).json({
         status: "failed",
@@ -510,7 +518,6 @@ const QuickLogin = (req, res) => {
   const { email, password } = req.body;
   console.log("email, password", email, password);
   User.isUserExists(email).then((isExists) => {
-    console.log("isExists", isExists);
     if (!isExists) {
       return res.status(400).json({
         status: "failed",
