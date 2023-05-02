@@ -99,17 +99,21 @@ const AddCompany = (request, response) => {
 
 async function isCompanyExists(company_id) {
   return new Promise((resolve) => {
-    pool.query(
-      "SELECT * FROM public.company_info WHERE company_id = $1",
-      [company_id],
-      (error, results) => {
-        if (error) {
-          throw error;
-        }
+    if (!company_id) {
+      reject("error:company_id is missing");
+    } else {
+      pool.query(
+        "SELECT * FROM public.company_info WHERE company_id = $1",
+        [company_id],
+        (error, results) => {
+          if (error) {
+            throw error;
+          }
 
-        return resolve(results.rowCount > 0);
-      }
-    );
+          return resolve(results.rowCount > 0);
+        }
+      );
+    }
   });
 }
 const Editcompanyinfo = (data) => {
