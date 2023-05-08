@@ -1,5 +1,4 @@
 let convert = require("./misc");
-let formatDate = require("./helper");
 exports.filter = (data) => {
   let pdate = null;
   if (data?.date) {
@@ -23,9 +22,6 @@ exports.filter = (data) => {
   let offset = 0;
   if (page > 1) {
     offset = (page - 1) * limit;
-  }
-  if (data?.searchKeyword) {
-    offset = 0;
   }
   let paging = " limit " + limit + " offset " + offset;
 

@@ -5,17 +5,10 @@ var User = require("../models/user");
 var auth = require("../helpers/auth");
 var filter = require("../helpers/filter");
 const crypto = require("crypto");
-const formatDate = require("../helpers/helper");
 const Email = require("../helpers/email");
 let moment = require("moment");
 var formValidation = require("../helpers/formValidation");
 
-var d = new Date();
-
-const dformat = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
-
-var d1 = formatDate.formatDate(new Date());
-const time = `${d1} ${dformat}`;
 const listUser = async function (req, res) {
   let tokanData = req.headers["authorization"];
   let data_s = filter.filter(req?.query);
@@ -471,10 +464,6 @@ const Login = (req, res) => {
                   const company_id = data?.company_id;
                   User.createUserSession({ token, id })
                     .then(function () {
-                      res.cookie(`Cookie token name`, {
-                        secret: "yoursecret",
-                        cookie: { maxAge: 6000 },
-                      });
                       res.status(200).send({
                         message: "Login successfully",
                         status: "true",
