@@ -9,18 +9,16 @@ const connectionString = `postgresql://${process.env.DB_USER}:${process.env.DB_P
 
 const pool = new Pool({
   connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
-  ssl: false,
+  ssl: isProduction,
 });
 
 pool.connect()
   .then(() => {
     console.log("✅ Database connected successfully");
     console.log("DB String :-",connectionString);
-    console.log("DB Test :-",isProduction);
   })
   .catch((err) => {
     console.log("DB String :-",connectionString);
-    console.log("DB Test :-",isProduction);
     console.error("❌ Database connection failed:", err.message);
     process.exit(1);
   });
