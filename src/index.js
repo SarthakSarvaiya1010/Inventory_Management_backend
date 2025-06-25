@@ -9,7 +9,7 @@ const indexRouter = require("./routes/index");
 const imageRouter = require("./routes/images");
 var cors = require("cors");
 var cookieParser = require("cookie-parser");
-const pool = require('../config'); // or wherever your pool is
+const pool = require('../config');
 
 
 
