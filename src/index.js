@@ -9,6 +9,9 @@ const indexRouter = require("./routes/index");
 const imageRouter = require("./routes/images");
 var cors = require("cors");
 var cookieParser = require("cookie-parser");
+const pool = require('../config'); // or wherever your pool is
+
+
 
 
 app.get("/", (request, response) => {
@@ -28,6 +31,15 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("public", express.static("public"));
 app.use("/images", imageRouter);
 app.use(cookieParser());
+
+app.get("/health", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT NOW()");
+    res.send({ status: "ok", time: result.rows[0].now });
+  } catch (err) {
+    res.status(500).send({ status: "error", message: err.message });
+  }
+});
 
 
 app.get("/getcookie", (req, res) => {
