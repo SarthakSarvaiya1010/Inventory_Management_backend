@@ -1,23 +1,14 @@
-// db.js
+const { Client } = require('pg');
 require('dotenv').config();
-const { Pool } = require('pg');
 
-const pool = new Pool({
-connectionString: process.env.DATABASE_URL,
+const client = new Client({
+  connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false, // Required for Render.com
+    require: true,
+    rejectUnauthorized: false,
   },
 });
 
-// Optional: test connection once when app starts
-(async () => {
-  try {
-    const res = await pool.query('SELECT NOW()');
-    console.log('Database connected at:', res.rows[0].now);
-  } catch (err) {
-    console.error('Initial DB connection error:', err);
-  }
-})();
-
-module.exports = pool;
-
+client.connect()
+  .then(() => console.log('Connected to DB'))
+  .catch(err => console.error('Connection error:', err));
