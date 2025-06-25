@@ -1,24 +1,23 @@
-require("dotenv").config();
-
-const { Pool } = require("pg");
-const isProduction = process.env.NODE_ENV === "production";
-
-const connectionString = `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_DATABASE}`;
+// db.js
+require('dotenv').config();
+const { Pool } = require('pg');
 
 const pool = new Pool({
-  connectionString: isProduction ? process.env.DATABASE_URL : connectionString,
-  ssl: isProduction ? { rejectUnauthorized: false } : false, // ✅ Fix here
+connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false, // Required for Render.com
+  },
 });
 
-pool.connect()
-  .then(() => {
-    console.log("✅ Database connected successfully");
-    console.log("DB String :-", connectionString);
-  })
-  .catch((err) => {
-    console.log("DB String :-", connectionString);
-    console.error("❌ Database connection failed:", err.message);
-    process.exit(1);
-  });
+// Optional: test connection once when app starts
+(async () => {
+  try {
+    const res = await pool.query('SELECT NOW()');
+    console.log('Database connected at:', res.rows[0].now);
+  } catch (err) {
+    console.error('Initial DB connection error:', err);
+  }
+})();
 
 module.exports = pool;
+
