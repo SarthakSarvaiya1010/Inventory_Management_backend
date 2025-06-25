@@ -32,6 +32,12 @@ app.get("/getcookie", (req, res) => {
   //show the saved cookies
   res.send(req.cookies);
 });
+
+app.get("/getData", (req, res) => {
+  //show the saved cookies
+  res.send({message:"Get Data"});
+});
+
 app.listen(port, () => {
   console.log(`App running on port ${port}.`);
 });
